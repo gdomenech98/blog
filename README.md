@@ -9,4 +9,4 @@
 6. [🐳 Docker 🐳](https://github.com/Sixedge-es/software_Arquitecture/blob/main/docker.md)
 7. [📦 Yarn 📦](https://github.com/Sixedge-es/software_Arquitecture/blob/main/yarn.md)
 8. [🌐 Nginx 🌐](https://github.com/Sixedge-es/software_Arquitecture/blob/main/nginx.md)
-9. [🎙️ Hablar en público sobre un proyecto 🎙️](https://github.com/Sixedge-es/software_Arquitecture/blob/main/howToDoDemos.md)
+9. [🎙️ Como hacer demos 🎙️](https://github.com/Sixedge-es/software_Arquitecture/blob/main/howToDoDemos.md)
