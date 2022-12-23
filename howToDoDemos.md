@@ -1,3 +1,5 @@
+[🔙 Volver al Indice](https://github.com/Sixedge-es/software_Arquitecture)
+
 🎙️ Hablar en público sobre un proyecto 🎙️
 ===================================
 - **Empezar hablando** del concepto **general y objetivo**, a medida que vaya avanzando la exposición ir comentando **detalles y cosas más concretas**. Es recomendable **empezar explicando el propósito general del proyecto**: que se pretende solucionar o abordar con la solución propuesta y después ir a los detalles mientras va avanzando la explicación.
