@@ -1,0 +1,28 @@
+# Databases
+
+# **SQL vs NoSQL databases**
+
+En el mundo del software las bases de datos se pueden estructurar en dos tipos: relacionales (SQL) y no relacionales (NoSQL).
+
+## **SQL databases**
+
+In these databases the data is stored structured using tables, in each table the rows are each one of the elements and the columns represent the attributes of each element.
+
+- These databases are good for structured data that can be easily validated.
+- They **prioritize the atomicity and the consistency of the data** over the availability of the data.
+- It used to be **scaled vertically**
+
+Some examples are PostgreSQL or MySQL.
+
+## **No SQL databases**
+
+In these databases you don’t need to define structures or data tables to store data, making them **more flexible** than SQL ones. You can store all types of data: strings, numbers, booleans or even objects
+
+- Flexible
+- They are good for **quick development**.
+- They prioritize the availability of the data over the consistency of the data.
+- It used to be **scaled horizontally** (more tolerant to failure, more data availability).
+
+These databases can store data using different methodologies like: **key-value** (**redis**), **graphs** (**graphQL**) or **documents** (**mongodb**).
+
+**Redis:** this database stores the data using key-value. It is very fast because it uses the RAM to store data. Used to act as a cache. Used to be used in low latency applications for example whatsapp, twitter (X), and some more to store the messages.

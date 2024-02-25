@@ -1,0 +1,120 @@
+# NGINX
+
+# What is NGINX?
+
+---
+
+Nginx is an **open-source**, **high-performance web server** and r**everse proxy server**. Here's a brief description of its key functions:
+
+- **Web Server:** Nginx can serve static files, such as HTML, CSS, and image files, directly to clients.
+- **Reverse Proxy:** It can act as a reverse proxy server, managing client requests and distributing them to multiple backend servers. This is useful for load balancing and improving performance.
+- **Load Balancer:** Nginx can function as a load balancer to distribute traffic among several backend servers, enhancing scalability and availability.
+- **HTTPS Management:** It provides capabilities for handling the HTTPS (SSL/TLS) protocol to ensure web communication security.
+- **Caching:** It can cache static content to reduce the load on backend servers and improve loading times.
+- **Mail Server:** Although not its primary function, Nginx can also be used as a mail server for the IMAP/POP3 protocols.
+
+# NGINX as reverse proxy
+
+---
+
+### Servers
+
+---
+
+Using NGINX you can configure different servers, and has a *default* server. There are various types of configurations: we can create a specific server that contains rules only for that server or generate rules for the default server. You can use `server` to create a new instance of a server in Nginx.
+
+In this example, we configure a server, and all requests directed to the subdomain `example.*` will be handled by this server. Additionally, we specify that it only listens on port 80 and has a maximum request size of 100 megabytes.
+
+```scss
+server {
+    listen 80;
+    server_name patata.*$;
+    client_max_body_size 100M;
+}
+```
+
+<aside>
+⚠️ As we have seen in the previous example, Nginx allows the use of regular expressions (**REGEX**) to specify some of its configurations, such as `proxypass`  or `server` .
+
+</aside>
+
+### Server alias
+
+---
+
+Nginx allows to create multiple aliases for a server through `upstream` . In the following example, we see how the server with the address `backoffice:8081`  is given the alias name `backoffice` . Additional context is provided in the example to understand where the upstream directive is placed in a configuration block.
+
+```scss
+upstream backoffice {
+    server backoffice:8081;
+}
+
+server {
+    listen 80;
+    location / {
+        proxy_pass http://backoffice;
+    }
+}
+```
+
+### Redirection rules
+
+---
+
+Each of the redirection rules is named `proxy_pass`. In the following example, we will see how they are configured:
+
+```scss
+location [path name] {
+    proxy_pass [redirects to path];
+}
+
+location /api {
+    proxy_pass http://localhost:1880/;
+}
+```
+
+<aside>
+⚠️ There are subtle but important nuances to consider
+
+</aside>
+
+If the `/` character is **included at the end of the destination server address**, Nginx is instructed to preserve the path of the incoming request and append it to the destination server address. 
+
+- For example, if a user accesses `http://example.com/some/path`, and the Nginx configuration includes proxy_pass `http://localhost/`, the request will be redirected to `http://localhost/some/path`.
+    
+    ```scss
+    location /some/path {
+        proxy_pass http://my_db_url/;
+    }
+    ```
+    
+    The previous rule redirects to `http://my_db_url/some/path` 
+    
+
+If the `/`  character is **NOT** **included** at the end of the destination server address, Nginx is instructed to ignore the path of the incoming request and use the destination server address as is. 
+
+- For example, if a user accesses `http://example.com/some/path`, and the Nginx configuration includes proxy-pass `http://localhost`, the request will be redirected to `http://localhost`
+    
+    ```scss
+    location /some/path {
+        proxy_pass http://my_db_url;
+    }
+    ```
+    
+    The previous rule redirects to `http://my_db_url/` 
+    
+
+### Importing configurations
+
+---
+
+In each of the Nginx configuration files, we can concatenate other configurations. This is done using the **`include`** directive. In the following example, we will see how all configuration files within the folder `/etc/nginx/conf.d/_services/`  whose names end in `.service.conf`  are included.
+
+```scss
+{
+    server {
+        listen 80;
+    }
+    include /etc/nginx/conf.d/_services/*.service.conf;
+}
+```
