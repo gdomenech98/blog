@@ -1,0 +1,7 @@
+{
+    "patterns": "Architecture patterns",
+    "hexagonal": "Hexagonal Architecture",
+    "microservices": "Microservices Architecture",
+    "cqrs": "CQRS Architecture",
+    "scaling": "Scaling an architecture"
+  }
