@@ -1,0 +1,225 @@
+# Docker
+
+
+## What is Docker?
+
+
+Docker is an open-source platform designed to streamline the creation, deployment, and execution of applications in containers. These are the key characteristics:
+
+- **Portability:** Docker containers are portable and can run on any machine with Docker installed, regardless of differences in the operating system or environment configuration (installing dependencies, configure OS or programs, etc).
+- **Efficiency:** Containers share the underlying operating system kernel, making them more resource-efficient compared to traditional virtual machines.
+- **Isolation:** Containers provide a level of isolation for applications, meaning each container operates independently without interfering with other containers on the same machine.
+- **Consistency**: Docker provides a consistent environment across all stages of the development and production lifecycle. Consistency between the programmer's development environment and the production environment enhances software quality and reduces errors caused by differences in configuration.
+- **Scalability:** Docker simplifies application deployment and scalability by allowing the execution of multiple instances of containers for the same application on different machines.
+- **Image Management:** Docker uses an image system to build containers. Images are templates containing the operating system, libraries, and dependencies needed to run an application.
+- **Continuous Delivery:** The ability to package applications and dependencies in containers facilitates continuous deployment and continuous delivery (CI/CD). Docker easily integrates into CI/CD pipelines, enabling quick and automated updates.
+- **Enhances Collaboration:** Docker simplifies collaboration among developers and teams by ensuring everyone is using the same environment. This reduces issues caused by differences in development configurations.
+
+- Why not Virtual Machines?
+    - Using more resources (RAM, Disk, CPU, etc.) as they do not run on the host operating system (OS) but generate a new OS that runs on the main OS installed on your device.
+    - Increased latency: Docker build and docker run commands are very fast due to the underlying processes when executed. In contrast, VMs are slow, making it inconvenient to perform Red-Green-Refactor comfortably.
+
+### What are containers?
+
+Docker uses container technology to package applications and their dependencies and configurations, allowing it to run consistently in any Docker-compatible environment. Basically are self-contained units that can run in **isolation**, facilitating **portability** and **consistency** across different environments.
+
+### Why docker?
+
+- It is a declarative language
+- Supports versioning
+- **Operates based on layers:** which are constructed on top of each other by annotating only the differences. To explain this concept of layers we need to **know how Dockerfile work**. In Dockerfiles, each command generates an image (layer). A command corresponds to a command line, e.g., RUN, ENTRYPOINT, COPY, FROM, etc. Whenever any of the commands is modified, the Docker image is regenerated from that point, ensuring efficient and versioned construction of the image.
+
+# Docker Clients
+
+---
+
+Docker operates as a client-server system where the client executes commands sent by the server. A Docker client is responsible for launching and configuring Docker images, also known as containers. Common Docker clients include:
+
+- Docker Desktop
+- Docker Compose
+- Docker CLI (using the **`docker run`** command).
+
+When the client and server docker processes, as many other programs, **communicate through files**. The file facilitating communication between the Docker client and server (read and write operations) is located at `/var/run/docker.sock` and essentially functions as an HTTP socket. 
+
+# How to create docker images: Dockerfiles
+
+---
+
+Docker images can be created using Dockerfile, or they can be obtained from a registry where developers upload their images, such as [Docker Hub](https://hub.docker.com/) (Docker image library).
+
+Docker file is a file that in which you can create docker images. It has a set of lines (commands) with different instructions. Each line in a Dockerfile generates a new layer in the Docker image. Layers are cached, and Docker attempts to reuse layers from previous builds to speed up the build process. 
+
+Explanation of some of the most common instructions used in a Dockerfile:
+
+**`FROM`**:
+
+- Defines the base image for your Docker image. It is usually the first instruction in a Dockerfile.
+- Example: **`FROM ubuntu:20.04`**
+
+**`RUN`**:
+
+- Executes commands in the building container shell during the image build process.
+- Example: **`RUN apt-get update && apt-get install -y python`**
+
+**`COPY`**:
+
+- Copies files or directories from the host system to the image filesystem.
+- Example: **`COPY . /app`**
+
+**`ADD`**:
+
+- Similar to **`COPY`** but with additional features. It can also fetch remote URLs and extract compressed files.
+- Example: **`ADD https://example.com/file.tar.gz /app/`**
+
+**`WORKDIR`**:
+
+- Sets the working directory for any **`RUN`**, **`CMD`**, **`ENTRYPOINT`**, **`COPY`**, and **`ADD`** instructions that follow it.
+- Example: **`WORKDIR /app`**
+
+**`CMD`**:
+
+- Provides a default command to run **when a container is started**. It can be overridden at runtime.
+- Example: **`CMD ["python", "app.py"]`**
+
+**`ENTRYPOINT`**:
+
+- Configures a container that will run as an executable. It allows you to pass arguments to the container. Basically is the program that starts the Docker is responsible for receiving the `CMD` command
+- Example: **`ENTRYPOINT ["python", "app.py"]`**
+- Example:
+    
+    > `ENTRYPOINT ["bash"]
+    CMD ["-c", "'echo Hello!'" ]`
+    > 
+    
+
+<aside>
+⚠️ There can be only one declaration for both the `CMD` and `ENTRYPOINT`commands. If using, for instance, **docker-compose** in the yml declaration, it allows us to override these commands with the **`command`** or **`entrypoint`** instructions.
+
+</aside>
+
+**`EXPOSE`**:
+
+- Informs Docker that the container will listen on specified network ports at runtime.
+- Example: **`EXPOSE 80`**
+
+**`ENV`**:
+
+- Sets environment variables in the image. These variables are available during the build process and when the container is running.
+- Example: **`ENV MY_VARIABLE=value`**
+
+**`ARG`**:
+
+- Defines build-time variables. They are only available during the build and can be overridden at build-time.
+- Example: **`ARG VERSION=latest`**
+
+**`VOLUME`**:
+
+- Creates a mount point for external volumes and specifies that the container will use it to persist data.
+- Example: **`VOLUME /data`**
+
+**`USER`**:
+
+- Sets the user that the image should run as when running the container.
+- Example: **`USER appuser`**
+
+**`LABEL`**:
+
+- Adds metadata to the image. Labels are key-value pairs that provide information about the image.
+- Example: **`LABEL maintainer="your-email@example.com"`**
+
+### Do and Don’t
+
+Imagine that we want to install Python, but before that we have to update the packages. 
+
+❌ Don’t
+
+> *Dockerfile.yml*
+`...`
+**`RUN apt-get update`
+`RUN apt-get install python`
+> 
+
+✅ Do
+
+> *Dockerfile.yml*
+`...`
+**`RUN apt-get update && apt-get install python`
+> 
+
+# How to properly work with Docker
+
+---
+
+### Bootstrapping
+
+Any system should be agnostic to where it is launched. For it to work, Docker should be the only requirement, and all other services must be containerized (**including Docker Compose**). The system responsible for having everything needed to start a project is called Bootstrapping.
+
+### Binding in docker
+
+As docker is a client-server program server (host “your phisical PC”) can bind ports and volumes with a docker container. Binding has the following syntax:
+
+> `xxxx:yyyy`  where `xxxx` refers to **host** port or volume while `yyyy` refers to docker container port or volume
+> 
+
+### Binding Volumes
+
+Docker containers start back from clean when you stop and start back again (consistency and isolation principles). If you want to preserve the persistence in your docker container you can create docker volumes or share volumes with host (the machine that is running docker server). You can create volumes with: 
+
+ `-v or --volumes`
+
+When sharing volumes whith host it is good practise to create environment variable with the route which the docker starts. For example:
+
+> Project is located at `/home/ubuntu/myProject` 
+It is a good practice to mount the volume inside the Docker container using:
+`-v /home/ubuntu/myProject:/home/ubuntu/myProject`. 
+Additionally, we could pass an environment variable inside docker container with the shared directory name, `-e LOCAL_DIR='/home/ubuntu/myProject'`.
+> 
+
+### Binding docker.sock between host and docker container
+
+This enables the Docker client inside the container to communicate with the Docker daemon on the host, effectively allowing the container to interact with the Docker engine running on the host system. **This is commonly used in scenarios where containers need to control or launch other containers.** However, it also poses **security risks,** so it should be used cautiously. 
+
+Enabled by mounting the following volume:
+
+`-v /var/run/docker.sock:/var/run/docker.sock`
+
+### Binding ports
+
+To expose a local port to the Docker server, we can map a local port to a Docker port, and it's not necessary for the locally exposed port to match the one in Docker. This is done using the **`-p`** or **`--port`** flag. Examples:
+
+> Bind port 8080 of host with port 80 of a container `-p 8080:80`
+Bind port 8080 of host with port 8080 of a container `-p 8080:8080`
+> 
+
+### Permissions
+
+When you share a volume between Docker and the host, you may encounter permission problems due to differences between the container's file system and that of the host. Here are some common issues related to permissions in these scenarios:
+
+**UID/GID Differences:**
+
+❌ Problems:
+
+- Users and groups within the container may have different User IDs (UID) and Group IDs (GID) than those on the host.
+- If a container creates files or directories, they may belong to a user or group with a UID/GID that does not have the same privileges on the host.
+
+✅ Solutions:
+
+- Ensure that users and groups within the container have the same UID/GID as relevant users and groups on the host. Example: `chown 1000 myFile`
+
+**Pro consideration ✨**  Every Ubuntu system has default user with UID **1000**
+
+**File Ownership and File Permissions:**
+
+❌ Problems:
+
+- The user running Docker on the host may be different from the user inside the container. This can lead to problems when trying to access files created by the container from the host.
+- File permissions can differ between the host and the container, causing issues with reading, writing, or executing from the host.
+- **Umask** configuration can affect the permissions of files created within the container. If the umask in the container doesn't match the umask on the host, permissions may not be as expected.
+- Nested permissions: Some applications may create files and directories with specific permissions. If these files are within a shared volume, permission problems can propagate through the directory hierarchy.
+
+✅ Solutions:
+
+- You can manually set the correct permissions after files or directories have been created in the shared volume. Example: `chmod +x myFile`
+- If you only need to read data from the container, consider mounting the volume as **read-only** to avoid writing problems.
+- **Permission management tool:** Some tools and scripts are designed to synchronize and manage permissions between the host and containers.
+- If using docker-compose with `user` and `groups_add` in services. With this options you can specify the user and group in the **`docker-compose.yml`** file to ensure the container runs with the same privileges as the user on the host.

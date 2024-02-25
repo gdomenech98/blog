@@ -1,0 +1,57 @@
+# Software design principles
+
+# 1. Software design principles
+
+---
+
+- **SOLID:** This acronym stands for **five key design principles** aimed at making software more **maintainable**, **extensible**, and **understandable**. While these principles are often linked to object-oriented programming, they can be applied to various programming paradigms.
+- **DRY (Don't Repeat Yourself):** This principle asserts that each piece of knowledge or logic in a software system (**system entity**) should be represented **only once**. By avoiding duplication, we can reduce maintenance efforts and decrease the chance of introducing inconsistencies during changes. Reusing code through **functions**, **classes**, or **modules** is a **common practice** to adhere to the DRY principle.
+- **KISS (Keep It Simple, Stupid):** This principle emphasizes that **simplicity should be a key factor in design**. It encourages developers to choose simple, straightforward solutions over complex ones. Typically, a simpler design is **easier to understand**, **debug**, and **maintain**.
+
+## 1.1 SOLID Principles explained
+
+---
+
+### **Single Responsibility**
+
+Class or module should have only one reason to change (**one** **responsibility**). By keeping classes focused on a single task, you make your code **more** **maintainable** and **easier** **to** **understand**.
+
+### **Open/Closed Principle**
+
+Software entities (**classes, modules, functions**) should be **open for extension but closed for modification**. This is typically achieved through **inheritance**, **interfaces**, and **polymorphism**.
+
+### **Liskov Substitution**
+
+**Objects of a derived class** (**Subclass**) should **be able to replace objects of the base** class (**Parent** **class**) without affecting the correctness of the program.  **It ensures that inheritance is used correctly** and that derived classes can be used interchangeably with their base classes.
+
+### **Interface Segregation**
+
+**Clients should not be forced to depend on interfaces they don't use**. In other words, interfaces should be specific to the needs of the clients that implement them, promoting a more modular and granular design.
+
+### **Dependency Inversion**
+
+**High-level modules to depend on abstractions, not on concrete implementations**. This promotes **loose coupling** **between components** and allows for easier substitution of components when needed.
+****
+
+# 2. What bring applying this principles?
+
+---
+
+- **Modularity:** Breaking the software into **smaller**, **self-contained** modules makes it **easier** to **understand**, **develop**, **test**, and **maintain**. Modules with **clear responsibilities** and limited dependencies are more **reusable** and **adaptable.**
+Modularity also brings separation of concerns. Separating a computer program into distinct sections, such that each section addresses a separate concern. It's closely related to modularity but focuses more on the segregation of responsibilities within the design.
+ADD
+
+👉 **Encapsulation:** Involves bundling data and methods that **operate on the data within one unit**, like a **class** in object-oriented programming. Information hiding refers to **restricting access to internal details of a module**, which is a key aspect of **encapsulation**.
+
+👉 Interoperability**:** The ability of a system to work with or **use the parts or equipment of another system**, ensuring **compatibility** and **communication** among different systems and components.
+- **Scalability and Performance:** Understanding how to design systems that can scale to **handle increased loads** and **perform efficiently** under different conditions is crucial. A well-designed system can **scale horizontally** and **vertically** to meet growing demands. Applying this principles can help you build **flexible** and **extendable** **systems**.
+- **Fault Tolerance and Resilience:** This involves designing systems with the **ability to continue operating**, possibly at a reduced level, even when some parts have failed.
+- **Security and Privacy:** Ensuring that the system is **secure from unauthorized access** and protects user data is an essential aspect of architecture.
+
+# 3. Software metrics
+
+---
+
+We need to implement metrics in our software to measure its quality. For instance, we can use development time as a metric for modularity. For scalability and performance, we can increase testing and measure the duration. The well-known '9s' can be used to gauge fault tolerance.
+
+Furthermore, for security and privacy, we could consider metrics such as the number of vulnerabilities detected and fixed, or the time taken to identify and address a security breach. Interoperability could be assessed by the ease and success rate of system integration efforts. Ultimately, these metrics will provide us with a clear indication of how well our software is performing and where improvements are needed.

@@ -1,0 +1,40 @@
+# [DDD] Domain Driven Design
+
+# Domain Driven Design [DDD]
+
+---
+
+A program is not a static entity, as it evolves, and therefore must be **prepared for change**. It is crucial to understand that a program has **infinite degrees of freedom**, and the first **piece we put in will condition the subsequent decisions**. The more pieces we add to our program, the more defined it will become, and we will have fewer degrees of freedom. 
+
+This is why the entire system should be approached with **imaginary entities that, when discussed with the client**, are concepts comprehensible to them (in human language). e.g: cars, invoices, users, accounts, etc. These imaginary entities are called **Domain Objects** in DDD. 
+
+When the client is explaining its idea, is always talking about **real concepts**. They do not talk about implementation details like UI or the databases. Designing the system using DDD allows you to play with a significant advantage: 
+
+the client is describing the program to you. Since the client, when describing their idea, talks about entities and how they relate to each other. e.g:
+
+> “I need a system that, given a car's license plate, can identify the driver”.
+> 
+
+With DDD, if something changes in the way you approach the program, you only need to add or remove domain objects and restructure the relationships established between them. 
+
+Otherwise in other models that are not based in DDD, and haven’t Domain Objects, you h**ave to imagine how the client wants the application**, and the program will be less robust to changes because you will be **struggling with the understanding of the product concept that the client has in mind and its implementation details**.
+
+# Domain Object
+
+---
+
+Domain Object is an entity that has attributes and methods encompassing a concept or idea and can establish relationships with other domain objects. All domain objects, to be well-formulated, must have the following properties:
+
+- **Immutability:** It means that the domain object should not be modifiable; if modified, a new object should be returned. This has profound consequences because if it is not immutable, queries and modifications to the object can be made from any point in the program, which can lead to disaster for your program. It's like modifying a global variable if not made immutable.
+    
+    <aside>
+    ⚠️ In some cases Domain Objects must be mutable to avoid, for example, unecessary re-renders. But this case is not usual.
+    
+    </aside>
+    
+- **Idempotence:** It involves maintaining the state over time and throughout your program.
+
+<aside>
+📌 A domain object must contain all data transformations related to business logic and must be abstracted from the infrastructure (as described by Eric Evans in the relationship between [Domain-Application-Infrastructure](https://www.notion.so/Architecture-patterns-794bbbc9b28d486d8bb2889d43ccaa29?pvs=21)).
+
+</aside>
