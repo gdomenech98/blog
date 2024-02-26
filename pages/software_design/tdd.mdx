@@ -1,42 +1,48 @@
 # [TDD] Test-Driven Development
 
+## What is Test-Driven Development?
 
-# What is TDD?
+**TDD** or **Test-Driven Development**, is a software development methodology that **emphasizes the creation of automated tests before writing the actual code for a piece of functionality**. The process is **iterative** and follows a short, repeatable cycle often described as "**Red-Green-Refactor**":
 
----
+## Red-Green-Refactor
+import { Steps, Callout } from 'nextra/components'
 
-TDD or Test-Driven Development, is a software development methodology that **emphasizes the creation of automated tests before writing the actual code for a piece of functionality**. The process is **iterative** and follows a short, repeatable cycle often described as "**Red-Green-Refactor**":
+<Steps>
+### Red
+ 
+Start by writing a test for the next bit of functionality you want to add. The test should fail at this point because the functionality doesn't exist yet. This step verifies that the test is meaningful and that it correctly fails when the expected functionality is absent.
+ 
+### Green
+ 
+Write the minimal amount of code necessary to make the test pass. This often means the implementation is not perfect but is sufficient to pass the test. The goal here is to quickly achieve a passing test and ensure that the new functionality works as expected.
+<Callout icon="🐛">
+The success of TDD in minimizing bugs depends on the coverage and quality of the tests. A **bug suggests that certain behaviors of the application are not sufficiently tested**.
+</Callout>
+### Refactor
 
-1. **Red**: Start by writing a test for the next bit of functionality you want to add. The test should fail at this point because the functionality doesn't exist yet. This step verifies that the test is meaningful and that it correctly fails when the expected functionality is absent.
-2. **Green**: Write the minimal amount of code necessary to make the test pass. This often means the implementation is not perfect but is sufficient to pass the test. The goal here is to quickly achieve a passing test and ensure that the new functionality works as expected.
+Once the test passes, you look at the new code and any existing code it interacts with to see if there are ways to improve it. This could involve cleaning up, removing duplication, and making sure the codebase remains easy to understand and maintain. The key during refactoring is to make sure that the tests continue to pass, ensuring that improvements do not break existing functionality.
 
-<aside>
-🐛 The success of TDD in minimizing bugs depends on the coverage and quality of the tests. A **bug suggests that certain behaviors of the application are not sufficiently tested**.
+</Steps>
 
-</aside>
 
-1. **Refactor**: Once the test passes, you look at the new code and any existing code it interacts with to see if there are ways to improve it. This could involve cleaning up, removing duplication, and making sure the codebase remains easy to understand and maintain. The key during refactoring is to make sure that the tests continue to pass, ensuring that improvements do not break existing functionality.
+## Test types
 
-# Test types
-
----
-
-### **Unit Tests**
+### Unit Tests
 
 - **Purpose**: To test the functionality of individual components (classes, methods, functions) in isolation from the rest of the system.
 - **Use in TDD**: They are the most common type of test in TDD. They are written before the production code to define how a specific component should behave.
 
-### **Integration Tests or End-to-End Tests**
+### Integration Tests or End-to-End Tests
 
 - **Purpose**: To verify that different components or systems work correctly together.
 - **Use in TDD**: Although the initial focus in TDD is on unit tests, integration tests are crucial to ensure that components passing unit tests also function correctly when integrated with other components.
 
-### **System Tests**
+### System Tests
 
 - **Purpose**: To evaluate the complete system to verify that it meets the specified requirements.
 - **Use in TDD**: System tests are broader and can be used to validate the complete functionality of the software after the individual components have been developed and tested.
 
-### **Acceptance Tests**
+### Acceptance Tests
 
 - **Purpose**: To confirm that the system is ready for use by end-users. They often rely on acceptance criteria defined by the client or stakeholders.
 - **Use in TDD**: They can be part of a Behavior-Driven Development (BDD) strategy that complements TDD, ensuring that the software not only passes technical tests but also meets user expectations.
@@ -46,52 +52,46 @@ TDD or Test-Driven Development, is a software development methodology that **emp
 - **Regression Tests**: Although not exclusive to TDD, the tests created during the TDD cycle become part of the regression test suite, helping to ensure that future changes do not break existing functionalities.
 - **Performance Tests**: They evaluate how the system behaves under load. They are not the main focus of TDD, but they are important to ensure that the software meets performance requirements.
 
-# Pros and Cons of TDD
-
----
-
-### ✅ Pros
+## Pros and Cons of TDD
+#### ✅ Pros
 
 - **Improved Code Quality**: Writing tests first helps ensure that the codebase is thoroughly tested and encourages designing more testable, and therefore often better-structured, code.
 - **Documentation**: The tests serve as documentation of the code's expected behavior.
 - **Design**: It can help in the design of the software, as writing tests can highlight potential issues with the software's structure or interfaces before too much time is spent on implementation.
 - **Confidence**: Developers can make changes or refactor code more confidently, knowing that the tests will catch any regressions or unintended side effects.
 
-### ❌ Cons
+#### ❌ Cons
 
 - **Test Maintenance Needs**: The tests themselves require maintenance and updates as the application code evolves. This can be seen as an additional burden, especially if the tests are fragile or too tightly coupled to the production code.
 - **Test Performance**: As the codebase grows, so does the test suite. This can lead to longer test execution times, which can slow down the feedback process and, consequently, the development process if not properly managed, for example, through selective test execution or parallelization.
 - **Implementation Cost**: Adopting TDD may require additional tools, team training, and an initial effort to integrate this methodology into existing processes, which represents a cost that not all organizations are willing or able to assume immediately.
 
-# When to apply TDD?
+## When to apply TDD?
 
----
-
-### ✅ Apply
+#### ✅ Apply
 
 - **Projects with Clear Requirements:** Although TDD can handle changes in requirements, it is more efficient when the functionality requirements to be implemented are clear from the start. This allows for writing more precise and relevant tests.
 - **Refactoring and Code Improvement:** is a powerful tool for refactoring, as existing tests can ensure that improvements or changes in the code do not introduce new errors into already tested functionalities.
 - **Continuous Integration Environments:** In projects that use continuous integration, TDD integrates well by providing a set of tests that run automatically, ensuring that new additions to the code do not break the current build.
 - **Projects Requiring High Quality and Stability:** In critical systems where errors can have serious consequences (such as in medical, financial, or security software), TDD helps to build a solid and reliable foundation, reducing the likelihood of defects.
 
-### ❌ No apply
+#### ❌ Don't apply
 
 - Implementing TDD in **early design stages may encounter obstacles**, especially under changing requirements, which could stiffen the creative flow.
 
-### Conclusion
+#### Conclusion
 
 Tests provide **quick feedback** on the behavior of your system, which, if used wisely, can **greatly accelerate the team**, allowing them to **make changes faster.** The **downside of tests is that they gradually make the system rigid.** The more automations and checks things have, the harder it becomes to change them later, because all the verifications need to be adjusted. Ideally, you would have tests that fail when there is a mistake, but never fail when there is no error. 
 
-> Consider the balance of what tests give you (quick feedback) and what they take away (flexibility).
-> 
+<Callout icon="💡"> 
+Consider the balance of what tests give you (**quick feedback**) and what they take away (**flexibility**).
+</Callout> 
 
-Therefore, the **goal is to reduce the rigidit**y that **tests add** and **maximize the feedback they provide** (they should fail when they need to fail and not when we are evolving the system). Tests need to be decoupled from implementation details, actually the statement of the test should be like a user story, and ideally, be the user story itself (this is called BDD - Behaviour Driven Development, a comprehensive management discipline within which Domain Driven Design fits very well as an architecture). 
+Therefore, the **goal is to reduce the rigidit**y that **tests add** and **maximize the feedback they provide** (they should fail when they need to fail and not when we are evolving the system). Tests need to be decoupled from implementation details, actually the statement of the test should be like a user story, and ideally, be the user story itself (this is called **Behaviour Driven Development [BDD]**, a comprehensive management discipline within which Domain Driven Design fits very well as an architecture). Here is an example 
+of a good test: "as a user, I want to be able to interact with the web" or "as a user, I want to be able to interact with the system". 
 
-Example: A test could be something like "as a user, I want to be able to interact with the web" or "as a user, I want to be able to interact with the system". An e2e (end-to-end) test that verifies the web loads and mounts the basic DOM elements of deployment.
 
-# Where to apply TDD?
-
----
+## Where to apply TDD?
 
 We will apply TDD based on the likelihood of failure and replication, the dynamism of the data, and error detection:
 
