@@ -1,4 +1,5 @@
 {
+  "index": "Introduction",
   "software_design": "Software Design",
   "architecture": "Software Architecture",
   "agile": "Agile",
@@ -8,8 +9,6 @@
   "monitoring": "Monitoring Software",
   "cloud": "Cloud",
   "tools_and_frameworks": "Tools&Frameworks",
-  "index": "Example 1",
-  "another": "Example 2",
   "about": {
     "title": "About",
     "type": "page"
