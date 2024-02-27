@@ -1,32 +1,16 @@
 # [CI/CD] Continous Integration and Continous Deployment
 
-: Agile, Architecture, CI/CD, DevOps
-Created: 1 de febrero de 2024 0:06
+import { Callout } from 'nextra/components'
 
+<Callout>
 In Agile, the aim is to have a constant feedback loop, which is why Continuous Integration (CI) and Continuous Deployment (CD) systems are used.
+</Callout>
 
-# What is Continous Integration (CI)?
-
----
-
-Continuous Integration (CI) is a software development practice that involves continuously merging changes made by multiple developers in a project. The main purpose of Continuous Integration is to detect and address integration issues early in the development cycle.
-
-The key features of Continuous Integration include:
-
-- **Regular Merging:** Developers frequently submit changes to the shared repository, and the integration of these changes is done regularly.
-- **Build Automation:** Automation is used to compile and build the project after each merge, ensuring that the integrated code is functional and does not cause issues.
-- **Automated Testing**: The execution of automated tests is an integral part of Continuous Integration to ensure that new contributions do not introduce errors and meet requirements.
-- **Fast Feedback:** Immediate feedback is provided to developers about the status of integration and the validity of their changes.
-
-Continuous Integration helps prevent compatibility issues and conflicts between codes from different developers by ensuring that all contributions are integrated continuously and seamlessly into the overall project.
-
-# What is Continous Deployment (CD)?
-
----
+## What is Continous Deployment (CD)?
 
 Continuous Deployment (CD) is a software development practice built upon the foundation of Continuous Integration (CI). While CI focuses on continuously merging and testing code changes, CD takes that concept a step further by automating the software deployment process in production environments.
 
-Key features of Continuous Deployment include:
+### Key features of Continuous Deployment
 
 - **Deployment Automation:** The deployment process in production environments is automated to ensure it is fast, consistent, and error-free.
 - **Automatic Merge with CI:** CD often integrates with CI, meaning changes that have passed tests in CI can be automatically deployed to the production environment.
@@ -37,42 +21,57 @@ The primary goal of CD is to reduce the time and complexity associated with depl
 
 ### Why CD?
 
-The problem is that what is being built or developed must be seen by the rest of the company as quickly as possible; the longer the time between construction and visibility, the worse it becomes. Continuous integration has nothing to do with deploying to production (that is the final integration).
+The problem is that what is being built or developed **must be seen by the rest of the company as quickly as possible**; the longer the time between construction and visibility, the worse it becomes. Continuous integration has nothing to do with deploying to production (that is the final integration).
 
-# Levels of CI (opinionated)
+## What is Continous Integration (CI)?
 
----
+Continuous Integration (CI) is a software development practice that involves continuously merging changes made by multiple developers in a project. The main purpose of Continuous Integration is to detect and address integration issues early in the development cycle.
 
-- **Level 1:** There is a single environment where **all developers see the result of integrating the committed work**. This level is essential for any strategy aiming to follow CI correctly.
-- **Level 2:** The rest of the company sees what developers are doing in real-time, or at most, on a daily basis. It is important to apply this second level to the extent that we are innovating in the product part and there is uncertainty about possible solutions at a global level.
-- **Level 3:** End users see what developers are doing in real-time, or at most, on a daily basis. This option is almost never within the 80/20 cost-benefit ratio.
+### Key features of Continuous Integration
 
-### Role of End Users in CI
+- **Regular Merging:** Developers frequently submit changes to the shared repository, and the integration of these changes is done regularly.
+- **Build Automation:** Automation is used to compile and build the project after each merge, ensuring that the integrated code is functional and does not cause issues.
+- **Automated Testing**: The execution of automated tests is an integral part of Continuous Integration to ensure that new contributions do not introduce errors and meet requirements.
+- **Fast Feedback:** Immediate feedback is provided to developers about the status of integration and the validity of their changes.
 
-In the context of CI (Continuous Integration), it is generally sought to prevent end users from being directly exposed to every change or update that is made. The aim is to ensure that end users interact with software versions that are stable and have a low risk of failure. 
+Continuous Integration helps prevent compatibility issues and conflicts between codes from different developers by ensuring that all contributions are integrated continuously and seamlessly into the overall project.
 
-This is due to:
+
+### Levels of CI 
+
+import {Steps} from 'nextra/components'
+
+<Steps>
+### Level 1  
+There is a single environment where **all developers see the result of integrating the committed work**. This level is essential for any strategy aiming to follow CI correctly.
+### Level 2
+The rest of the company sees what developers are doing in real-time, or at most, on a daily basis. It is important to apply this second level to the extent that we are innovating in the product part and there is uncertainty about possible solutions at a global level.
+### Level 3 
+End users see what developers are doing in real-time, or at most, on a daily basis. This option is almost never within the 80/20 cost-benefit ratio.
+</Steps> 
+
+### The role of end-users in CI
+
+In the context of CI (Continuous Integration), it is generally sought to prevent end users from being directly exposed to every change or update that is made. The aim is to ensure that end users interact with software versions that are stable and have a low risk of failure. Caused by:
 
 - **Exposure to frequent changes:** If every change made by developers directly reaches the end users, there is a high risk of introducing errors or problems into the user experience.
 - **Need for change filtering:** To prevent the delivery of "bad" or "dangerous" changes to end users, automation is required to test and validate the software before its deployment. This ensures that the software meets established minimum functionality and quality standards.
 
-### **Importance of Development Environments**
+### Importance of Development Environments
 
 - **Internal environments vs. Exposure to clients:** When changes only affect the company's internal environments (i.e., development or test environments that are not accessible by end users), the impact of possible errors is lesser and more controllable. On the contrary, if changes are deployed directly to end users without an adequate validation process, serious problems can arise in the user experience.
 - **Early feedback:** Continuously presenting the progress and changes of the project to those funding the project (clients or internal stakeholders) in a development environment allows for rapid feedback. This facilitates early adjustments based on the needs or feedback of the client, minimizing the costs associated with late changes.
 
-### **Feedback Cycle and Adjustments**
+### Feedback cycle and adjustments
 
 - **Continuous feedback vs. Feedback at the end:** When the client or financier observes and evaluates the development of the project continuously, it is possible to make real-time adjustments and ensure that the final product meets their expectations. This contrasts with receiving feedback at the end of the process, a time when making changes can be much more costly and difficult.
 - **Integration between company and client:** For those seeking to ensure that the final product meets both the client's expectations and the needs of the end users, it is recommended to establish a cycle of continuous integration between the company and the client. This means that once a change or new functionality is approved in the development environment, it proceeds to its implementation in production, under the responsibility of the company.
 
-### **Conclusion**
+### Conclusion
 
 The practice of Continuous Integration seeks to improve the quality of software and the efficiency of the development process, minimizing the risks associated with software releases. By keeping end users away from unvalidated changes and fostering an early and continuous feedback cycle with clients or financiers, companies can ensure that the final product is not only of high quality but also meets the expectations and needs of the end users. This underscores the importance of a balanced approach between technical development and the management of client relationships.
 
-# Methodologies to work with CI/CD
-
----
+## Methodologies to work with CI/CD
 
 When integrating there are a compromise between security and integration speed. As more speed you want to have in CI you take more risks. There are different aproaches that balance these two variables:
 
@@ -85,7 +84,7 @@ Trunk-Based Development is a software development strategy that focuses on prima
 - **Continuous Delivery:** The methodology aligns with continuous delivery practices to enable the release of software at any time.
 - **Avoiding Long-Lived Branches:** Creating prolonged branches is discouraged to prevent integration issues and facilitate ongoing collaboration.
 
-### **Feature Branching**
+### Feature Branching
 
 Feature Branching is a software development strategy that involves creating separate branches for each new feature or task being worked on. Feature Branching allows developers to isolate changes related to specific features or functionalities. Here are some key characteristics:
 
@@ -95,11 +94,11 @@ Feature Branching is a software development strategy that involves creating sepa
 - **Merging into Main:** Once a feature is completed and tested, its branch is merged back into the main branch, incorporating the new functionality into the overall project.
 - **Feature Freeze:** Feature branches may undergo a "freeze" period during which no new features are added, allowing stabilization and preparation for a release.
 
-### **Gitflow**
+### Gitflow
 
 Gitflow is a branching model for Git that defines a specific set of branches and their relationships to manage the software development process. It provides a structured workflow for parallel development, release preparation, and collaboration among team members. Here are the key aspects of Gitflow:
 
-**Branch Types**
+#### Branch Types
 
 - **Master Branch (Main):** Represents the production-ready code.
 - **Develop Branch:** Serves as the integration branch for ongoing development work.
@@ -107,7 +106,7 @@ Gitflow is a branching model for Git that defines a specific set of branches and
 - **Release Branches:** Prepared for a new production release, allowing for final testing and bug fixes.
 - **Hotfix Branches:** Created to address critical issues in the production code.
 
-**Workflow**
+#### Workflow
 
 - Developers work on feature branches, branching off from the develop branch.
 - Once a feature is complete, it is merged back into the develop branch.
@@ -116,18 +115,18 @@ Gitflow is a branching model for Git that defines a specific set of branches and
 - After testing, the release branch is merged into both the master branch (for production) and the develop branch.
 - Hotfix branches address critical issues in the master branch, are created, tested, and then merged back into master and develop.
 
-✅ Pros
+##### ✅ Pros
 
 - Provides a clear structure for managing feature development, releases, and hotfixes.
 - Facilitates collaboration and parallel development on multiple features.
 - Enables stable release preparation with the release branch.
 
-❌ Cons
+##### ❌ Cons
 
 - Can introduce additional complexity, especially for smaller projects.
 - Requires discipline in following the defined workflow to avoid conflicts.
 
-### **Release Branching**
+### Release Branching
 
 Release Branching is a branching strategy in software development that involves creating a specific branch dedicated to preparing a software release. This approach allows for the stabilization of code, final testing, and addressing any last-minute issues before deploying the software to production. Here are the key aspects of Release Branching:
 
@@ -140,9 +139,7 @@ Release Branching is a branching strategy in software development that involves 
 - **Tagging:** Once the release branch is merged back into the main branch, a version tag is often applied to mark the specific release in the version history.
 - **Deployment:** The code from the main branch, now including the release changes, is deployed to the production environment.
 
-# Isolated Deployment
-
----
+## Isolated Deployment
 
 Often, when developing in an environment, we encounter dependencies on various physical factors such as RAM, memory, processor, and more. This includes the operating system and other programs present in the working environment. How can we implement environments that are agnostic and isolated, i.e., consistent with each other? A viable solution is Virtual Private Servers (VPS). VPS is a service provided by large server companies offering virtualized resources from a larger server in which they are hosted.
 

@@ -3,7 +3,6 @@
 
 ## What is Docker?
 
-
 Docker is an open-source platform designed to streamline the creation, deployment, and execution of applications in containers. These are the key characteristics:
 
 - **Portability:** Docker containers are portable and can run on any machine with Docker installed, regardless of differences in the operating system or environment configuration (installing dependencies, configure OS or programs, etc).
@@ -19,31 +18,27 @@ Docker is an open-source platform designed to streamline the creation, deploymen
     - Using more resources (RAM, Disk, CPU, etc.) as they do not run on the host operating system (OS) but generate a new OS that runs on the main OS installed on your device.
     - Increased latency: Docker build and docker run commands are very fast due to the underlying processes when executed. In contrast, VMs are slow, making it inconvenient to perform Red-Green-Refactor comfortably.
 
-### What are containers?
+## What are docker containers?
 
 Docker uses container technology to package applications and their dependencies and configurations, allowing it to run consistently in any Docker-compatible environment. Basically are self-contained units that can run in **isolation**, facilitating **portability** and **consistency** across different environments.
 
-### Why docker?
+## Why docker
 
 - It is a declarative language
 - Supports versioning
 - **Operates based on layers:** which are constructed on top of each other by annotating only the differences. To explain this concept of layers we need to **know how Dockerfile work**. In Dockerfiles, each command generates an image (layer). A command corresponds to a command line, e.g., RUN, ENTRYPOINT, COPY, FROM, etc. Whenever any of the commands is modified, the Docker image is regenerated from that point, ensuring efficient and versioned construction of the image.
 
-# Docker Clients
-
----
+## Docker Clients
 
 Docker operates as a client-server system where the client executes commands sent by the server. A Docker client is responsible for launching and configuring Docker images, also known as containers. Common Docker clients include:
 
 - Docker Desktop
 - Docker Compose
-- Docker CLI (using the **`docker run`** command).
+- Docker CLI (using the `docker run` command).
 
 When the client and server docker processes, as many other programs, **communicate through files**. The file facilitating communication between the Docker client and server (read and write operations) is located at `/var/run/docker.sock` and essentially functions as an HTTP socket. 
 
-# How to create docker images: Dockerfiles
-
----
+## Dockerfiles: the way to create docker images
 
 Docker images can be created using Dockerfile, or they can be obtained from a registry where developers upload their images, such as [Docker Hub](https://hub.docker.com/) (Docker image library).
 
@@ -51,104 +46,112 @@ Docker file is a file that in which you can create docker images. It has a set o
 
 Explanation of some of the most common instructions used in a Dockerfile:
 
-**`FROM`**:
+- `FROM`:
+    Defines the base image for your Docker image. It is usually the first instruction in a Dockerfile.
+    ```dockerfile
+    FROM ubuntu:20.04
+    ```
 
-- Defines the base image for your Docker image. It is usually the first instruction in a Dockerfile.
-- Example: **`FROM ubuntu:20.04`**
+- `RUN`:
+    Executes commands in the building container shell during the image build process.
+    ```dockerfile
+    RUN apt-get update && apt-get install -y python
+    ```
 
-**`RUN`**:
+- `COPY`:
+    Copies files or directories from the host system to the image filesystem.
+    ```dockerfile
+    COPY . /app
+    ```
 
-- Executes commands in the building container shell during the image build process.
-- Example: **`RUN apt-get update && apt-get install -y python`**
+- `ADD`:
+    Similar to `COPY` but with additional features. It can also fetch remote URLs and extract compressed files.
+    ```dockerfile
+    ADD https://example.com/file.tar.gz /app/
+    ```
 
-**`COPY`**:
+- `WORKDIR`:
+    Sets the working directory for any `RUN`, `CMD`, `ENTRYPOINT`, `COPY`, and `ADD` instructions that follow it.
+    ```dockerfile
+    WORKDIR /app
+    ```
 
-- Copies files or directories from the host system to the image filesystem.
-- Example: **`COPY . /app`**
+- `CMD`:
+    Provides a default command to run **when a container is started**. It can be overridden at runtime.
+    ```dockerfile
+    CMD ["python", "app.py"]
+    ```
 
-**`ADD`**:
+- `ENTRYPOINT`:
+    Configures a container that will run as an executable. It allows you to pass arguments to the container. Basically is the program that starts the Docker is responsible for receiving the `CMD` command
+    ```dockerfile 
+    ENTRYPOINT ["python", "app.py"]
+    ```
+    ```dockerfile 
+    ENTRYPOINT ['bash']
+    CMD ['-c', '"echo Hello!"' ]
+    ```
 
-- Similar to **`COPY`** but with additional features. It can also fetch remote URLs and extract compressed files.
-- Example: **`ADD https://example.com/file.tar.gz /app/`**
+import { Callout } from 'nextra/components'
 
-**`WORKDIR`**:
+<Callout type="warning" icon="⚠️">
+There can be only one declaration for both the `CMD` and `ENTRYPOINT`commands. If using, for instance, **docker-compose** in the yml declaration, it allows us to override these commands with the **`command`** or **`entrypoint`** instructions.
+</Callout>
 
-- Sets the working directory for any **`RUN`**, **`CMD`**, **`ENTRYPOINT`**, **`COPY`**, and **`ADD`** instructions that follow it.
-- Example: **`WORKDIR /app`**
+- `EXPOSE`:
+    Informs Docker that the container will listen on specified network ports at runtime.
+    ```dockerfile
+    EXPOSE 80
+    ```
 
-**`CMD`**:
+- `ENV`:
+    Sets environment variables in the image. These variables are available during the build process and when the container is running.
+    ```dockerfile
+    ENV MY_VARIABLE=value
+    ```
 
-- Provides a default command to run **when a container is started**. It can be overridden at runtime.
-- Example: **`CMD ["python", "app.py"]`**
+- `ARG`:
+    Defines build-time variables. They are only available during the build and can be overridden at build-time.
+    ```dockerfile 
+    ARG VERSION=latest
+    ```
 
-**`ENTRYPOINT`**:
+- `VOLUME`:
+    Creates a mount point for external volumes and specifies that the container will use it to persist data.
+    ```dockerfile 
+    VOLUME /data
+    ```
 
-- Configures a container that will run as an executable. It allows you to pass arguments to the container. Basically is the program that starts the Docker is responsible for receiving the `CMD` command
-- Example: **`ENTRYPOINT ["python", "app.py"]`**
-- Example:
-    
-    > `ENTRYPOINT ["bash"]
-    CMD ["-c", "'echo Hello!'" ]`
-    > 
-    
+- `USER`:
+    Sets the user that the image should run as when running the container.
+    ```dockerfile 
+    USER appuser
+    ```
 
-<aside>
-⚠️ There can be only one declaration for both the `CMD` and `ENTRYPOINT`commands. If using, for instance, **docker-compose** in the yml declaration, it allows us to override these commands with the **`command`** or **`entrypoint`** instructions.
+- `LABEL`:
+    Adds metadata to the image. Labels are key-value pairs that provide information about the image.
+    ```dockerfile
+    LABEL maintainer="your-email@example.com"
+    ```
 
-</aside>
-
-**`EXPOSE`**:
-
-- Informs Docker that the container will listen on specified network ports at runtime.
-- Example: **`EXPOSE 80`**
-
-**`ENV`**:
-
-- Sets environment variables in the image. These variables are available during the build process and when the container is running.
-- Example: **`ENV MY_VARIABLE=value`**
-
-**`ARG`**:
-
-- Defines build-time variables. They are only available during the build and can be overridden at build-time.
-- Example: **`ARG VERSION=latest`**
-
-**`VOLUME`**:
-
-- Creates a mount point for external volumes and specifies that the container will use it to persist data.
-- Example: **`VOLUME /data`**
-
-**`USER`**:
-
-- Sets the user that the image should run as when running the container.
-- Example: **`USER appuser`**
-
-**`LABEL`**:
-
-- Adds metadata to the image. Labels are key-value pairs that provide information about the image.
-- Example: **`LABEL maintainer="your-email@example.com"`**
-
-### Do and Don’t
+### Do's and Don’ts
 
 Imagine that we want to install Python, but before that we have to update the packages. 
 
-❌ Don’t
+#### ❌ Don’t
+ ```dockerfile filename="Dockerfile"
+    ...
+    RUN apt-get update
+    RUN apt-get install python
+ ```
 
-> *Dockerfile.yml*
-`...`
-**`RUN apt-get update`
-`RUN apt-get install python`
-> 
+#### ✅ Do
+ ```dockerfile filename="Dockerfile"
+    ...
+    RUN apt-get update && apt-get install python
+ ```
 
-✅ Do
-
-> *Dockerfile.yml*
-`...`
-**`RUN apt-get update && apt-get install python`
-> 
-
-# How to properly work with Docker
-
----
+## How to properly work with Docker
 
 ### Bootstrapping
 
@@ -159,7 +162,6 @@ Any system should be agnostic to where it is launched. For it to work, Docker sh
 As docker is a client-server program server (host “your phisical PC”) can bind ports and volumes with a docker container. Binding has the following syntax:
 
 > `xxxx:yyyy`  where `xxxx` refers to **host** port or volume while `yyyy` refers to docker container port or volume
-> 
 
 ### Binding Volumes
 
@@ -173,15 +175,16 @@ When sharing volumes whith host it is good practise to create environment variab
 It is a good practice to mount the volume inside the Docker container using:
 `-v /home/ubuntu/myProject:/home/ubuntu/myProject`. 
 Additionally, we could pass an environment variable inside docker container with the shared directory name, `-e LOCAL_DIR='/home/ubuntu/myProject'`.
-> 
+
 
 ### Binding docker.sock between host and docker container
 
 This enables the Docker client inside the container to communicate with the Docker daemon on the host, effectively allowing the container to interact with the Docker engine running on the host system. **This is commonly used in scenarios where containers need to control or launch other containers.** However, it also poses **security risks,** so it should be used cautiously. 
 
 Enabled by mounting the following volume:
-
-`-v /var/run/docker.sock:/var/run/docker.sock`
+```bash 
+-v /var/run/docker.sock:/var/run/docker.sock
+```
 
 ### Binding ports
 
@@ -189,35 +192,36 @@ To expose a local port to the Docker server, we can map a local port to a Docker
 
 > Bind port 8080 of host with port 80 of a container `-p 8080:80`
 Bind port 8080 of host with port 8080 of a container `-p 8080:8080`
-> 
 
 ### Permissions
 
 When you share a volume between Docker and the host, you may encounter permission problems due to differences between the container's file system and that of the host. Here are some common issues related to permissions in these scenarios:
 
-**UID/GID Differences:**
+#### UID/GID
 
-❌ Problems:
+##### Problems ❌ 
 
 - Users and groups within the container may have different User IDs (UID) and Group IDs (GID) than those on the host.
 - If a container creates files or directories, they may belong to a user or group with a UID/GID that does not have the same privileges on the host.
 
-✅ Solutions:
+##### Solutions ✅ 
 
 - Ensure that users and groups within the container have the same UID/GID as relevant users and groups on the host. Example: `chown 1000 myFile`
 
-**Pro consideration ✨**  Every Ubuntu system has default user with UID **1000**
+<Callout icon="✨">
+Pro consideration: every Ubuntu system has default user with UID **1000**
+</Callout>
 
-**File Ownership and File Permissions:**
+#### File Ownership and File Permissions
 
-❌ Problems:
+##### Problems ❌
 
 - The user running Docker on the host may be different from the user inside the container. This can lead to problems when trying to access files created by the container from the host.
 - File permissions can differ between the host and the container, causing issues with reading, writing, or executing from the host.
 - **Umask** configuration can affect the permissions of files created within the container. If the umask in the container doesn't match the umask on the host, permissions may not be as expected.
 - Nested permissions: Some applications may create files and directories with specific permissions. If these files are within a shared volume, permission problems can propagate through the directory hierarchy.
 
-✅ Solutions:
+##### Solutions ✅ 
 
 - You can manually set the correct permissions after files or directories have been created in the shared volume. Example: `chmod +x myFile`
 - If you only need to read data from the container, consider mounting the volume as **read-only** to avoid writing problems.
