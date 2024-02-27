@@ -1,40 +1,31 @@
 # Hexagonal Architecture
 
-# What it is?
-
----
+## What it is?
 
 Architecture pattern that aims to create **loosely** **coupled** **components** that can be easily connected to their software environment through **ports** and **adapters**. Is particularly useful for applications where **business logic** needs to be **kept separate** from **external** **concerns** like **databases**, **user** **interfaces**, and **other services**.
 
-# What are ports?
 
----
+### What are ports?
 
 Ports are interfaces that define how the **application** can **interact** with the **outside world**. Ports represent the **primary way to interact with the application's core logic**. There are typically **two types of ports.**
 
 - **Primary or Driving Ports: These are used by the application to expose its features to the outside world, like a RESTful HTTP interface for a web application.**
 - **Secondary or Driven Ports: These are used by the application to interact with external systems, like databases or messaging services.**
 
-# What are adapters?
-
----
+### What are adapters?
 
 These are implementations that **connect the ports to the external systems** or technologies. Adapters translate requests from the external world (external to the core application logic) into a format that the application can understand, and vice versa.
 
 - **Primary or Driving Adapters: These adapt the external input to the application, like a web interface or a REST API.**
 - **Secondary or Driven Adapters: These adapt the application to the external services it must use, like a database or a message broker.**
 
-# What is central core?
-
----
+### What is central core?
 
 At the **heart** of the architecture is the **application's core** **logic (business logic)**, which is **decoupled** from **external** **concerns (usually using DDD)**.
 
-# Characteristics
+## Characteristics
 
----
-
-- S**eparation of Concerns:** Clearly **separates the application's core logic** **from external concerns** like user interfaces, data storage, and external services. **This separation helps in maintaining a clean boundary around the application**.
+- **Separation of Concerns:** Clearly **separates the application's core logic** **from external concerns** like user interfaces, data storage, and external services. **This separation helps in maintaining a clean boundary around the application**.
 - **Independent of Technology:** Because of the use of ports and adapters, the **core application logic remains independent of the technology used** in the adapters (like web frameworks, database technologies).
 - **Facilitates Testability: Easy unit testing of the application core without requiring external elements** like databases or web servers. You can create test adapters to simulate real-world interactions.
 - **Flexibility and Maintainability: Changes in external dependencies or technologies do not impact the core business logic**. You can replace or update external components with minimal changes to the core application
@@ -42,20 +33,14 @@ At the **heart** of the architecture is the **application's core** **logic (busi
 - **Multiple Interface Support:** Allows an application to **interact with multiple types of clients or services through different adapters**. This is particularly useful in situations where the same application **logic is accessed in various ways** (e.g., web, API, console).
 - **Domain-Centric Design:** The **core of the application focuses on domain logic, emphasizing the importance of the business rules over technical aspects**.
 
-# Pros and Cons
+    ### ✅ Pros
+    - **Decoupling:**  It decouples the core logic of the application from external components, which leads to cleaner, more maintainable code.
+    - **Testability**: The separation of concerns facilitates testing. The core logic can be tested in isolation from external systems.
+    - **Flexibility and Adaptability**: It's easier to replace or modify adapters without affecting the core logic.
+    - **Independent Development**: Teams can work on different parts of the system (adapters vs. core logic) independently.
+    - **Multiple Interfaces:** The application can interact with multiple types of clients and servers through different adapters.
 
----
-
-**✅ Pros**
-
-- **Decoupling:**  It decouples the core logic of the application from external components, which leads to cleaner, more maintainable code.
-- **Testability**: The separation of concerns facilitates testing. The core logic can be tested in isolation from external systems.
-- **Flexibility and Adaptability**: It's easier to replace or modify adapters without affecting the core logic.
-- **Independent Development**: Teams can work on different parts of the system (adapters vs. core logic) independently.
-- **Multiple Interfaces:** The application can interact with multiple types of clients and servers through different adapters.
-
-**❌ Cons**
-
-- **Complexity**: For simple applications, this pattern can introduce unnecessary complexity.
-- **Overhead**: More interfaces and classes (ports and adapters) can mean more overhead in understanding and maintaining the application.
-- **Design Challenges**: Properly identifying and designing ports and adapters can be challenging, especially in evolving domains.
+    ### ❌ Cons
+    - **Complexity**: For simple applications, this pattern can introduce unnecessary complexity.
+    - **Overhead**: More interfaces and classes (ports and adapters) can mean more overhead in understanding and maintaining the application.
+    - **Design Challenges**: Properly identifying and designing ports and adapters can be challenging, especially in evolving domains.
