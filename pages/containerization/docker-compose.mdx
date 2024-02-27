@@ -1,22 +1,18 @@
 # Docker Compose
 
----
+## What is Docker compose?
 
-Docker Compose is an orchestrator tool that allows **defining and managing multi-container Docker applications** (acting as Docker client). With Docker Compose, you can define an application composed of multiple services, each of which runs in a separate Docker container. These services can be **easily configured, scaled, and interconnected using a YAML file called `docker-compose.yml`.**
+Docker Compose is an orchestrator tool that allows **defining and managing multi-container Docker applications** (acting as Docker client). With Docker Compose, you can define an application composed of multiple services, each of which runs in a separate Docker container. These services can be **easily configured**, **scaled**, and **interconnected** using a **YAML file** called `docker-compose.yml`.
 
 The docker-compose.yml file describes the **configuration of the services, including the container image, volumes, networks, and other specific settings**. Docker Compose facilitates the creation, execution, and management of distributed applications by enabling the **definition of the application architecture** and necessary services in a single file.
 
-Some benefits of using Docker Compose include:
-
+## Benefits of docker compose
 - **Ease of Use:** It allows defining and managing multi-container applications with a simple YAML file.
 - **Portability:** The docker-compose.yml file can be shared and used in different environments, making it easy to replicate the application on different machines or environments.
 - **Scalability:** It enables the easy scaling of services by replicating containers as needed.
 - **Maintenance:** It simplifies the management and maintenance of complex applications by providing a clear definition of the structure and configuration of services.
 
-### Service discovery
-
----
-
+## Service discovery
 Service discovery in Docker Compose refers to the ability of containers within a multi-container Docker application to **discover and communicate with each other dynamically**. In a distributed application composed of multiple services, service discovery becomes crucial for ensuring that services can locate and interact with each other without relying on hardcoded network configurations.
 
 Docker Compose provides service discovery through the naming of services within the same Docker Compose file. Each service in the docker-compose.yml file is given a unique name, and Docker automatically creates a DNS entry for that service. This DNS entry allows containers to refer to each other by the service name instead of explicit IP addresses.
@@ -31,18 +27,28 @@ services:
     ports:
       - "8080:80"
   db:
-    image: mysql:latest
+    image: mongo:latest
     environment:
-      MYSQL_ROOT_PASSWORD: example
-      MYSQL_DATABASE: mydatabase
+      MONGO_ROOT_PASSWORD: example
+      MONGO_DATABASE: mydatabase
 ```
 
-In this example, the web service can communicate with the database service using the hostname "db" instead of specifying an IP address. This makes the configuration more portable and easier to manage. So you can do: `ping mongo` instead of `ping xxx.xxx.xxx.xxx`
+In this example, the web service can communicate with the database service using the hostname "db" instead of specifying an IP address. This makes the configuration more portable and easier to manage. 
+
+import {Callout} from 'nextra/components'
+
+<Callout>
+Whith service discovery ✅ 
+`ping mongo` 
+
+Whithout service discovery ❌
+`ping xxx.xxx.xxx.xxx`
+</Callout>
 
 Service discovery simplifies the process of scaling and updating services within a Docker Compose application. When scaling a service, new containers can be created with unique names, and the existing containers can automatically discover and communicate with the new instances using the service name.
 
-### Configuring services in different compose files
-
----
-
-You can organize the services in different Docker Compose files (even if they are not called docker-compose.yml) and execute them together using `-f` flag. Example with the following command: **`docker-compose -f file1.yml -f file2.yml -f file3.yml up`**.
+## Configuring services in different compose files
+You can organize the services in different Docker Compose files (even if they are not called docker-compose.yml) and execute them together using `-f` flag. 
+```bash
+docker-compose -f file1.yml -f file2.yml -f file3.yml up
+```
