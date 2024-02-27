@@ -1,8 +1,6 @@
 # NGINX
 
-# What is NGINX?
-
----
+## What is NGINX
 
 Nginx is an **open-source**, **high-performance web server** and r**everse proxy server**. Here's a brief description of its key functions:
 
@@ -13,38 +11,33 @@ Nginx is an **open-source**, **high-performance web server** and r**everse proxy
 - **Caching:** It can cache static content to reduce the load on backend servers and improve loading times.
 - **Mail Server:** Although not its primary function, Nginx can also be used as a mail server for the IMAP/POP3 protocols.
 
-# NGINX as reverse proxy
-
----
+## Reverse proxy with NGINX
 
 ### Servers
-
----
 
 Using NGINX you can configure different servers, and has a *default* server. There are various types of configurations: we can create a specific server that contains rules only for that server or generate rules for the default server. You can use `server` to create a new instance of a server in Nginx.
 
 In this example, we configure a server, and all requests directed to the subdomain `example.*` will be handled by this server. Additionally, we specify that it only listens on port 80 and has a maximum request size of 100 megabytes.
 
-```scss
-server {
+```nginx {1} copy
+server { 
     listen 80;
     server_name patata.*$;
     client_max_body_size 100M;
 }
 ```
 
-<aside>
-⚠️ As we have seen in the previous example, Nginx allows the use of regular expressions (**REGEX**) to specify some of its configurations, such as `proxypass`  or `server` .
+import { Callout } from 'nextra/components'
 
-</aside>
+<Callout>
+As we have seen in the previous example, Nginx allows the use of regular expressions (**REGEX**) to specify some of its configurations, such as `proxypass`  or `server` .
+</Callout>
 
 ### Server alias
 
----
-
 Nginx allows to create multiple aliases for a server through `upstream` . In the following example, we see how the server with the address `backoffice:8081`  is given the alias name `backoffice` . Additional context is provided in the example to understand where the upstream directive is placed in a configuration block.
 
-```scss
+```nginx {1} copy
 upstream backoffice {
     server backoffice:8081;
 }
@@ -58,12 +51,9 @@ server {
 ```
 
 ### Redirection rules
-
----
-
 Each of the redirection rules is named `proxy_pass`. In the following example, we will see how they are configured:
 
-```scss
+```nginx {2} copy
 location [path name] {
     proxy_pass [redirects to path];
 }
@@ -73,16 +63,15 @@ location /api {
 }
 ```
 
-<aside>
-⚠️ There are subtle but important nuances to consider
-
-</aside>
+<Callout icon="⚠️">
+There are subtle but important nuances to consider
+</Callout>
 
 If the `/` character is **included at the end of the destination server address**, Nginx is instructed to preserve the path of the incoming request and append it to the destination server address. 
 
-- For example, if a user accesses `http://example.com/some/path`, and the Nginx configuration includes proxy_pass `http://localhost/`, the request will be redirected to `http://localhost/some/path`.
+    Example 1: if a user accesses `http://example.com/some/path`, and the Nginx configuration includes proxy_pass `http://localhost/`, the request will be redirected to `http://localhost/some/path`.
     
-    ```scss
+    ```nginx copy {2}
     location /some/path {
         proxy_pass http://my_db_url/;
     }
@@ -93,9 +82,9 @@ If the `/` character is **included at the end of the destination server address*
 
 If the `/`  character is **NOT** **included** at the end of the destination server address, Nginx is instructed to ignore the path of the incoming request and use the destination server address as is. 
 
-- For example, if a user accesses `http://example.com/some/path`, and the Nginx configuration includes proxy-pass `http://localhost`, the request will be redirected to `http://localhost`
+    Example 2: if a user accesses `http://example.com/some/path`, and the Nginx configuration includes proxy-pass `http://localhost`, the request will be redirected to `http://localhost`
     
-    ```scss
+    ```nginx copy {2}
     location /some/path {
         proxy_pass http://my_db_url;
     }
@@ -106,11 +95,9 @@ If the `/`  character is **NOT** **included** at the end of the destination serv
 
 ### Importing configurations
 
----
-
 In each of the Nginx configuration files, we can concatenate other configurations. This is done using the **`include`** directive. In the following example, we will see how all configuration files within the folder `/etc/nginx/conf.d/_services/`  whose names end in `.service.conf`  are included.
 
-```scss
+```nginx copy
 {
     server {
         listen 80;
