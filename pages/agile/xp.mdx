@@ -1,14 +1,12 @@
 # [XP] Extreme programming
 
-# Extreme Programming (XP)
-
----
+## What is Extreme programming?
 
 Extreme Programming (XP) is a software development methodology that aims to improve software quality and responsiveness to changing customer requirements through frequent releases in short development cycles. XP was created by Kent Beck during the late 1990s and has since gained popularity in the agile software development community.
 
 Extreme Programming is known for its flexibility and adaptability to changing project requirements. It is particularly suitable for projects where requirements are expected to evolve or are not well-defined at the outset.
 
-Key principles and practices of Extreme Programming include:
+## Key principles and practices of XP
 
 - **Fine-Scale Feedback:** XP emphasizes **short development cycles**, typically lasting one to three weeks. Frequent release s allow for quick feedback from customers, enabling developers to adapt to changing requirements.
 - **Continuous Planning:** Planning is an ongoing and integral part of XP. Developers and customers continuously collaborate to prioritize and adjust the features and tasks in the development queue.
@@ -20,74 +18,70 @@ Key principles and practices of Extreme Programming include:
 - **Collective Code Ownership:** All team members are responsible for the entire codebase. This promotes collaboration, reduces bottlenecks, and allows any team member to work on any part of the system.
 - **Sustainable Pace:** XP advocates for a sustainable work pace to prevent burnout and maintain high productivity over the long term.
 
-# XP developer workflow
+## XP developer workflow
 
----
+import {Steps, Callout} from 'nextra/components'
 
-### 1. Environment Check and Pull Changes
+<Steps>
+### Environment Check and Pull Changes
 
 - Before starting to work, you verify that the current environment is functioning correctly.
 - You perform a pull to obtain the latest changes and ensure you are integrated with the most recent code.
 
-### 2. Continuous Synchronization
+### Continuous Synchronization
 
 - You maintain constant synchronization with the repository, regularly pulling changes while working.
 - The frequency of pulls helps reduce integration issues and keeps the codebase updated.
 
-### 3. User Story Development
+### User Story Development
 
 - You develop the functionality related to the user story you are addressing.
 
-### 4. Task Completion
+### Task Completion
+    ##### Completed task before the end of your workday
+        - You verify that the developed functionality works correctly.
+        - You conduct testing, and if everything is fine, you commit and push to the repository.
+    #### Non-completed task at the end of your workday
+        - If you have useful but not entirely functional parts, you add a toggle to enable/disable the code.
+        - You commit and push with the toggle deactivated so that other developers do not see broken code.
+        - If you have nothing useful, you do not commit and perform a hard reset to start the next day with the code in a functional state (Green).
 
-- Completed task before the end of your workday:
-    - You verify that the developed functionality works correctly.
-    - You conduct testing, and if everything is fine, you commit and push to the repository.
-- Task non-completed at the end of your workday:
-    - If you have useful but not entirely functional parts, you add a toggle to enable/disable the code.
-    - You commit and push with the toggle deactivated so that other developers do not see broken code.
-    - If you have nothing useful, you do not commit and perform a hard reset to start the next day with the code in a functional state (Green).
-
-<aside>
-📌 In the realm of XP (Extreme Programming), a task, process, or user story (US) **can be meticulously executed as a sequence of concise, atomic, independent, and non-disruptive changes.** 
+</Steps>
+<Callout>
+In the realm of XP (Extreme Programming), a task, process, or user story (US) **can be meticulously executed as a sequence of concise, atomic, independent, and non-disruptive changes.** 
 
 This approach ensures each modification contributes to the system's stability and functionality without causing disruptions or necessitating large-scale rollbacks. By adopting this methodology, developers can achieve **incremental progress**, facilitating **easier integration**, testing, and adaptation, thereby enhancing overall project agility and resilience.
-
-</aside>
-
-<aside>
-⚠️ Before implementing a feature, I **have to ensure that I am in the "green" state**, meaning it is functional. 
-
+</Callout>
+<Callout type="warning" icon="⚠️">
+Before implementing a feature, I **have to ensure that I am in the "green" state**, meaning it is functional. 
 **What does "functional" mean?** It means meeting certain customer acceptance criteria, such as ensuring the program's speed is adequate, the program's behavior is as expected, etc.
+</Callout>
 
-</aside>
+<Callout type="error" icon="🚫">
+ **Never** implement a feature if I you are **not in "green"** state because then, how can I be sure that what you are implementing works?
+</Callout>
 
-<aside>
-🚨 **Never implement a feature if I am not in the "green" state because then, how can I be sure that what I am implementing works?**
-
-</aside>
-
-# Red-Green-Refactor
-
----
-
+## Red-Green-Refactor
 "Red-Green-Refactor" is a fundamental cycle in Test-Driven Development (TDD). It consists of three main steps:
 
-1. **Red:** In this phase, a developer writes a failing test that defines a small unit of functionality. The test is written before any code is implemented, and it initially fails because there is no code to satisfy it.
-2. **Green:** In this phase, the developer writes the minimum amount of code required to make the failing test pass. The goal is to implement the functionality needed to satisfy the test, without concern for code quality or optimization at this stage.
-3. **Refactor:** After the test passes, the developer can refactor the code to improve its structure, readability, and efficiency. Refactoring is about making the code better without changing its behavior. This step helps maintain a clean and maintainable codebase.
+<Steps>
+### Red
+    In this phase, a developer writes a failing test that defines a small unit of functionality. The test is written before any code is implemented, and it initially fails because there is no code to satisfy it.
+### Green
+    In this phase, the developer writes the minimum amount of code required to make the failing test pass. The goal is to implement the functionality needed to satisfy the test, without concern for code quality or optimization at this stage.
+### Refactor
+    After the test passes, the developer can refactor the code to improve its structure, readability, and efficiency. Refactoring is about making the code better without changing its behavior. This step helps maintain a clean and maintainable codebase.
+</Steps>
+
 
 The Red-Green-Refactor cycle is then repeated for the next piece of functionality or improvement. This iterative process encourages incremental development, with each iteration resulting in a small, tested, and refactored piece of code.
 
-- How much times do I have to refactor?
+### How much times do I have to refactor?
     
-    There isn’t a fixed number of times, but there are some cases that allow to refactor:
+    There **isn’t a fixed number of times**, but there are some cases that allow to refactor:
     
     - Refactor until code works with the features that the end user/customer expects or demands.
     - Refactor to improve code developing experience it each time you work with it.
 
-# Convention over configuration [CoC]
-
----
-
+## Convention over configuration
 It is a concept used in computing. Essentially, the idea is that it should connect seamlessly with the code. This means that the program should have a default configuration, and the program should start. This way, it never fails even if the program's executor does not initially provide any configuration. To avoid mandatory configuration, the program should have no obligatory flags; there should be one by default. The default value chosen for the flags should be the best possible for the majority of cases; these default values are called **"sane defaults”**.
