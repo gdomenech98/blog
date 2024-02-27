@@ -2,16 +2,19 @@
 
 ## **How to make good commits?**
 
----
-
 - **Atomic Commits:** Each commit should represent an atomic change and focus on a specific task. Avoid mixing unrelated changes in a single commit.
 - **Descriptive Commit Messages:** Write clear and descriptive commit messages.
 - **Do not commit breaking code:** Only commit code if and only if it works. If the code doesn't work and you need to commit, add a **toggle variable** that allows deactivating the non-functional code. This variable should be committed in a state that does not affect people pulling the project.
 - **Avoid Massive Commits:** Avoid making massive commits that include unrelated changes such as linters or files not related to the specific commit change.
 
-### **Interesting Commands**
+## **Interesting Commands**
+- Go back to a specific commit
 
----
+```bash 
+git checkout ${commit_sha}
+```
 
-- If we want to go back to a specific commit, we can do so with the following command: **`git checkout ${commit}`**
-- Roll back a commit: **`git revert ${commit}`**
+- Roll back a commit
+```bash
+git revert ${commit_sha}
+```
