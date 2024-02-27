@@ -1,57 +1,54 @@
 # Agile
 
-# What is Agile?
-
----
+## What is Agile?
 
 Agile methodology is an approach to software development that focuses on **flexibility**, **collaboration**, and **delivering small pieces of a project at a time**. Instead of following a rigid plan, agile **embraces changes** and aims to **adapt to them quickly.**
 
-# Agile principles
+## Agile principles
 
----
-
-1. **Incremental Delivery**
-    - Software is delivered in small, manageable parts called **sprints** or **iterations**, allowing for quick and constant progress.
-2. **Constant Collaboration**
-    - Team members and stakeholders work closely together, sharing information and making sure everyone understands the project's goals.
-3. **Adaptability to Change**
-    - Agile **welcomes changes** in project requirements and strives to handle them effectively.
-4. **Focus on Quality**
-    - Quality is a priority, with practices like continuous code review, automated testing, and ongoing feedback to ensure high-quality work.
-5. **Autonomous Teams**
-    - Teams are **self-organized** and have the **freedom to make decisions about how to implement and deliver the software**.
-6. **Continuous Feedback**
-    - **Regular reviews** and **adjustments** are made to optimize efficiency and product quality.
-7. **Customer Focus**
-    - **Prioritizing customer needs** and ensuring the **delivery of value are central to the agile approach**. Customer involvement is maintained throughout the process.
+- **Incremental Delivery:**
+Software is delivered in small, manageable parts called **sprints** or **iterations**, allowing for quick and constant progress.
+- **Constant Collaboration**
+Team members and stakeholders work closely together, sharing information and making sure everyone understands the project's goals.
+- **Adaptability to Change:**
+Agile **welcomes changes** in project requirements and strives to handle them effectively.
+- **Focus on Quality:**
+Quality is a priority, with practices like continuous code review, automated testing, and ongoing feedback to ensure high-quality work.
+- **Autonomous Teams:**
+Teams are **self-organized** and have the **freedom to make decisions about how to implement and deliver the software**.
+- **Continuous Feedback:**
+**Regular reviews** and **adjustments** are made to optimize efficiency and product quality.
+- **Customer Focus:**
+**Prioritizing customer needs** and ensuring the **delivery of value are central to the agile approach**. Customer involvement is maintained throughout the process.
     
 
-# Agile methodologies
-
----
-
+## Agile methodologies
 There are diferent agile methodologies such as **Scrum**, **Kanban**, **Extreme Programming (XP)**, and **Lean**, share agile principles while providing specific practices. They are not limited to software development and have been successfully applied in various fields.
 
-# Agile manifesto
+import { Callout } from 'nextra/components'
 
----
+<Callout type="warning" emoji="🚧">
+Comming soon: explain methodologies
+</Callout>
 
-> *We are uncovering better ways of developingsoftware by doing it and helping others do it.Through this work we have come to value:*
-> 
-> 
-> ***Individuals and interactions** over processes and tools
-> **Working software** over comprehensive documentation
-> **Customer collaboration** over contract negotiation
-> **Responding to change** over following a plan*
-> 
-> *That is, while there is value in the items onthe right, we value the items on the left more.*
-> 
+## Agile manifesto
 
-Participants of manifesto: Kent Beck, Mike Beedle, Arie van Bennekum, Alistair Cockburn, Ward Cunningham, Martin Fowler, James Grenning, Jim Highsmith, Andrew Hunt, Ron Jeffries, Jon Kern, Brian Marick, Robert C. Martin, Steve Mellor, Ken Schwaber, Jeff Sutherland and Dave Thomas. [source](https://agilemanifesto.org/)
+<Callout >
+ *We are uncovering better ways of developingsoftware by doing it and helping others do it.Through this work we have come to value:*
+ 
+ 
+ ***Individuals and interactions** over processes and tools
+ **Working software** over comprehensive documentation
+ **Customer collaboration** over contract negotiation
+ **Responding to change** over following a plan*
+ 
+ *That is, while there is value in the items onthe right, we value the items on the left more.*
+ 
+</Callout>
 
-# Agile at development software process
+> Participants of manifesto: Kent Beck, Mike Beedle, Arie van Bennekum, Alistair Cockburn, Ward Cunningham, Martin Fowler, James Grenning, Jim Highsmith, Andrew Hunt, Ron Jeffries, Jon Kern, Brian Marick, Robert C. Martin, Steve Mellor, Ken Schwaber, Jeff Sutherland and Dave Thomas. [source](https://agilemanifesto.org/)
 
----
+## Agile in software development
 
 In the software development process, several changes are made to a digital asset with the aim of creating a different experience and addressing new needs. This approach is based on making incremental adjustments to the same asset, typically stored in the cloud using version control services like Git.
 
@@ -59,69 +56,71 @@ The business team shares ideas, concerns, fears, inspirations, wishes, and ambig
 
 At the end of each sprint, the involved team gathers to analyze and share the following areas: positive aspects, negative aspects, and potential areas for improvement. This meeting facilitates the evaluation of the team's strengths and weaknesses and allows for proposing attitudes or behaviors to improve in future sprints, which will be addressed in the upcoming retrospectives (**retro meetings**).
 
-# Agile concepts User Stories (US)
+## Agile concepts 
 
----
+### User Stories (US)
 
 A **User Story**, or "Historia de Usuario" in Spanish, is a technique used in agile software development methodologies to express the features or functionalities that a team wishes to implement in a product based on client/stakeholders/end-user needs. A User Story focuses on the user's perspective and describes a functionality from the viewpoint of the customer or end-user.
 USs help teams understand and prioritize user needs. Integrated into the project backlog, these stories are chosen for implementation during sprints, which are short iterations in agile methodologies such as Scrum.
 
-- How to write a US?
+#### How to write a US
     
     A User Story typically follows a simple structure, such as the following:
     
-    <aside>
-    ✍🏼 As **[type of user]**, I want to **[perform a certain action/ need that must be addressed]** to **[achieve a specific goal / purpose ]**.
+    <Callout >
+    As **[type of user]**, I want to **[perform a certain action/ need that must be addressed]** to **[achieve a specific goal / purpose ]**.
+    </Callout>
     
-    </aside>
+    Example
+    >“As a registered user, I want to be able to change my password to enhance the security of my account.”*
     
-    *eg. “As a registered user, I want to be able to change my password to enhance the security of my account.”*
+    <Callout type="info" emoji="️ℹ️" >
+    **Why this structure?**
+
+    In this structure checks that there is an end user [type of user] expresses a **need that must be addressed** [i want], and the **purpose** [to]. 
+    </Callout>
     
-    **Why this structure?** In this structure checks that there is an end user [type of user] expresses a **need that must be addressed** [i want], and the **purpose [**to]. 
-    
-    ❌ Common errors- Consider the following premises when creating User Stories
-    
+#### Common errors writting US
+     Consider the following premises when creating User Stories.
+    <Callout type="error" emoji="️🚫" >
     - Only formulate User Stories that start with "As a user"; there is no consideration for framing it “as a company” or “as an institution”.
     - User Stories use non-technical language to provide context to the team. Don’t put words like backend, frontend, DB, API, etc.
     - User Stories should not express implementation details or solutions to the need they present (suggestions may be included in the Story's description).
+    </Callout>
 
-Agile actors
-
----
+## Agile actors
 
 In an agile team, there are several key positions that play specific roles to ensure the project's success. Here are some of the most common roles:
 
-**Product Owner (PO):**
+### Product Owner (PO)
 
 - Represents the interests and needs of the customer or business in the form of user stories.
 - Responsible for defining and prioritizing the product backlog.
 - Works closely with the development team to ensure User Stories are clear and valuable.
 
-**Scrum Master:**
+### Scrum Master
 
 - Facilitates the agile process and helps the team follow agile practices.
 - Removes obstacles and promotes a collaborative work environment.
 - Not a traditional leader but rather a facilitator and advocate for the team.
 
-**Development Team:**
+### Development Team
 
 - Professionals working on the implementation and delivery of User Stories.
 - Can include developers, designers, testers, and other roles necessary to complete tasks.
 
-**Quality Assurance (QA):**
+### Quality Assurance (QA)
 
 - Ensures the quality of the software by testing and validating features.
 - Collaborates with the development team to define acceptance criteria for User Stories.
 
-**Stakeholders:**
+### Stakeholders
 
 - Individuals or groups outside the team with an interest in the project or product.
 - Includes customers, managers, marketing, among others.
 - Provides important information and feedback.
 
-# Emergent Design
-
----
+## Emergent Design
 
 There are various ways to approach solutions and architect a plan, but we could categorize them into two types.
 
