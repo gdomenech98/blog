@@ -4,14 +4,14 @@ import { DocsThemeConfig } from 'nextra-theme-docs'
 const config: DocsThemeConfig = {
   logo: <span>Gerard Domenech</span>,
   project: {
-    link: 'https://github.com/gdomenech98/software-arquitecture',
+    link: 'https://github.com/gdomenech98/blog',
   },
   chat: {
     link: 'https://discord.com',
   },
-  docsRepositoryBase: 'https://github.com/gdomenech98/software-arquitecture',
+  docsRepositoryBase: 'https://github.com/gdomenech98/blog',
   footer: {
-    text: 'Gerard Domenech Docs',
+    text: 'Gerard Domenech Blog',
   },
 }
 
