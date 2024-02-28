@@ -13,6 +13,11 @@ const config: DocsThemeConfig = {
   footer: {
     text: 'Gerard Domenech Blog',
   },
+  useNextSeoProps() {
+    return {
+      titleTemplate: 'Blog-%s'
+    }
+  }
 }
 
 export default config
