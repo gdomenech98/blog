@@ -1,7 +1,7 @@
 {
   "index": "Introduction",
-  "software_design": "Software Design",
   "architecture": "Software Architecture",
+  "software_design": "Software Design",
   "agile": "Agile",
   "demos": "Software Demos",
   "databases": "Databases",
@@ -9,6 +9,7 @@
   "monitoring": "Monitoring Software",
   "cloud": "Cloud",
   "tools_and_frameworks": "Tools&Frameworks",
+  "interview": "Interview",
   "about": {
     "title": "About",
     "type": "page"

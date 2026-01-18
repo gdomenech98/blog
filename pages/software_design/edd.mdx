@@ -1,6 +1,325 @@
-# [EDD] Event Driven Development - Event sourcing
-import { Callout } from 'nextra/components'
+# [EDD] Event-Driven Design
 
-<Callout type="warning" emoji="🚧">
-Comming soon
+import { Callout, Card, Eventual, FileTree } from 'nextra/components'
+
+<Callout type="info">
+**Event-Driven Design (EDD)** es una arquitectura donde el sistema refleja y comunica cambios relevantes del negocio mediante **eventos**. Los servicios reaccionan a lo que ocurre, no a llamadas directas.
 </Callout>
+
+EDD es ideal para sistemas: `Distribuidos`, `Escalables` y `Resilientes`
+
+<Callout>
+Asume fallos, diseña para ellos y usa eventos como lenguaje del negocio. Se suele y puede usar juntamente con DDD.
+</Callout>
+
+---
+
+## ¿Qué es un evento?
+Un **evento** representa un **hecho del dominio** que ya ocurrió y no puede cambiarse.
+
+Ejemplo:
+`OrderCreated`
+`PaymentConfirmed`
+`UserRegistered`
+
+<Callout type="warning">
+Un evento **no es una intención**, es una afirmación del pasado.
+</Callout>
+
+---
+
+## Componentes principales en EDD
+<table style={{ borderCollapse: 'collapse', width: '100%' }}>
+  <thead>
+    <tr>
+      <th style={{ border: '1px solid #e5e7eb', padding: '8px', textAlign: 'left' }}>Componente</th>
+      <th style={{ border: '1px solid #e5e7eb', padding: '8px', textAlign: 'left' }}>Descripción</th>
+      <th style={{ border: '1px solid #e5e7eb', padding: '8px', textAlign: 'left' }}>Responsabilidades</th>
+      <th style={{ border: '1px solid #e5e7eb', padding: '8px', textAlign: 'left' }}>Ejemplos</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style={{ border: '1px solid #e5e7eb', padding: '8px' }}>Broker</td>
+      <td style={{ border: '1px solid #e5e7eb', padding: '8px', color: "#bababaff" }}>Garantiza la entrega de los eventos</td>
+      <td style={{ border: '1px solid #e5e7eb', padding: '8px', color: "#bababaff" }}>
+        <ul>
+          <li>Persistencia de mensajes</li>
+          <li>Reintentos</li>
+          <li>Orden dentro de una partición</li>
+        </ul>
+      </td>
+      <td style={{ border: '1px solid #e5e7eb', padding: '8px', color: "#bababaff" }}>Kafka, RabbitMQ</td>
+    </tr>
+    <tr>
+      <td style={{ border: '1px solid #e5e7eb', padding: '8px' }}>Producer</td>
+      <td style={{ border: '1px solid #e5e7eb', padding: '8px', color: "#bababaff" }}>Servicio que emite el evento</td>
+      <td style={{ border: '1px solid #e5e7eb', padding: '8px', color: "#bababaff" }}>
+        <ul>
+          <li>Generar el evento tras un cambio de dominio</li>
+          <li>Enviar el evento al broker</li>
+        </ul>
+      </td>
+      <td style={{ border: '1px solid #e5e7eb', padding: '8px', color: "#bababaff" }}>—</td>
+    </tr>
+    <tr>
+      <td style={{ border: '1px solid #e5e7eb', padding: '8px' }}>Consumer</td>
+      <td style={{ border: '1px solid #e5e7eb', padding: '8px', color: "#bababaff" }}>Servicio que procesa el evento</td>
+      <td style={{ border: '1px solid #e5e7eb', padding: '8px', color: "#bababaff" }}>
+        <ul>
+          <li>Procesar el evento correctamente</li>
+          <li>Ser idempotente</li>
+          <li>Gestionar retries</li>
+          <li>Enviar ACK al broker</li>
+        </ul>
+      </td>
+      <td style={{ border: '1px solid #e5e7eb', padding: '8px', color: "#bababaff" }}>—</td>
+    </tr>
+  </tbody>
+</table>
+
+---
+## Consistencia eventual
+<Callout type="warning" emoji="⚠️">
+En sistemas distribuidos como los que usarian EDD **no todo el sistema es consistente al mismo tiempo**.
+Cada servicio procesa eventos a su ritmo. Con el tiempo, todos convergen al mismo estado.
+</Callout>
+
+Ejemplo:
+Pedido creado --> Facturación lo procesa --> Notificaciones lo procesa
+
+Durante un tiempo los estados pueden diferir, pero el sistema termina siendo consistente.
+
+--- 
+## Fallos en sistemas distribuidos
+
+<Callout type="warning">
+En sistemas distribuidos **los fallos no son una excepción, son la norma**.
+</Callout>
+
+Principios comunes:
+- `At-least-once`: el evento puede llegar más de una vez, se debe asumir en el broker y por lo tanto en el consumer.
+- `At-most-once`: puede perderse.
+- `Must-once`: El evento llega almenos una vez, si llega más de una vez, el consumidor debe ser idempotente (el efecto final es el mismo llegue 1 o varios reenvíos de un mismo evento).
+- `Exactly-once`: El evento se recibe una única vez, no pasa nunca y suele ser muy costoso que solo pase esa vez, no se puede asumir este caso.
+
+---
+
+## Principios fundamentales
+
+### 1. Los eventos reflejan cambios de estado del dominio
+Solo se emiten cuando algo relevante para el negocio cambia.
+### 2. Los eventos son inmutables
+Una vez emitidos **no se modifican**. Si algo cambia, se emite un nuevo evento.
+### 3. Idempotencia
+Un consumidor debe poder procesar el **mismo evento varias veces** sin efectos secundarios.
+Esto es crítico porque:
+- Los sistemas distribuidos fallan
+- Hay retries
+- Puede haber duplicados
+
+<Callout type="info">
+Procesar N veces debe producir el mismo resultado que procesar 1 vez.
+</Callout>
+
+---
+
+### 4. Orden de los eventos
+En algunos flujos el orden importa.
+
+Ejemplo: eventos por cliente, partition key sería el id del cliente (client_id).
+
+Esto se logra con **particiones**.
+
+<Callout type="info">
+Dentro de una partición, los eventos se procesan en orden FIFO.
+</Callout>
+
+---
+
+### 5. Durabilidad y confiabilidad
+Los eventos no deben perderse.
+
+
+
+<Callout type="info">
+Se logra mediante: **Brokers persistentes**, **logs** y **persistencia en DB**.
+</Callout>
+
+---
+
+### 6. Seguridad
+<Callout type="error">
+Los eventos no exponen datos sensibles ni esquemas de internos, siguen contratos claros (schema, version).
+</Callout>
+
+---
+
+### 7. Observabilidad
+<Callout type="warning" emoji="👀">
+Debe ser posible:
+- **Event Trace**: Trazar un evento extremo a extremo
+- **Debuggear fallos**
+- **Correlacionar eventos**
+</Callout>
+
+---
+
+## Idempotencia en profundidad
+
+Hemos dicho anteriormente que en sistemas distribuidos lo más normal es que haya fallo y por ende los eventos pueden duplicarse debido a causas como:
+<Callout type="error" icon="🔄">
+Caídas/Reinicios de servicios
+</Callout>
+<Callout type="error" icon="🌐">
+Fallos de red
+</Callout>
+<Callout type="error" icon="🔄">
+Reenvíos del broker o reintentos de el productor del evento.
+</Callout>
+
+
+<Callout type="warning">
+Es responsabilidad del consumidor protegerse ante estos casos.
+</Callout>
+
+### Técnicas comunes
+
+<FileTree>
+  <FileTree.Folder name="consumers" defaultOpen>
+    <FileTree.File name="process_event.ts" />
+  </FileTree.Folder>
+
+  <FileTree.Folder name="db" defaultOpen>
+    <FileTree.File name="ingested_events" />
+  </FileTree.Folder>
+</FileTree>
+
+1. **Idempotence key**
+<Callout>
+Guardar el <strong>event_id</strong> y <strong>ignorar si ya fue procesado</strong>
+</Callout>
+
+
+2. **Realizar operaciones de modificación seguras**
+<Callout>
+<strong>append/patch</strong> en vez de <strong>insert</strong>
+</Callout>
+
+---
+
+## Event Sourcing
+
+El estado **no se guarda como snapshot (un valor final)**, se reconstruye a partir de eventos. Es decir, consiste en **guardar todos los eventos que han provocado cambios de estado** para poder reconstruir el estado actual a partir de estos.
+
+<Callout>
+Características:
+- Los eventos son la fuente de la verdad
+- El estado se puede recalcular
+- Auditoría completa
+</Callout>
+<Callout type="info">
+No siempre es necesario, pero encaja muy bien con EDD.
+</Callout>
+
+---
+
+## Cómo evitar la pérdida de eventos
+
+### En el broker
+
+- Broker persistente (Kafka / RabbitMQ): los eventos quedan persistidos.
+- Recuperación tras caídas: los eventos se reenvian en el estado que guardo el broker antes de caer.
+- Particiones para orden: dentro de una partición, los eventos se procesan en orden FIFO.
+- **Dead Letter Queue (DLQ)**: eventos que fallaron al procesarse se reenvian a esta cola para ser evaluados posteriormente de manera más detallada (hasta manualmente).
+
+#### ¿Qué es la DLQ?
+Es una cola que permite: **reprocesar eventos fallidos** y **analizar errores**.
+
+---
+
+### En el sistema
+
+- Logs persistentes: Cloudwatch / ELK / Loki etc.
+- Monitoring: permite la visualización y análisis de eventos en tiempo real y a lo largo del tiempo (Prometheus/ Grafana).
+- Alertas: permiten la prevención de comportamientos erróneos.
+
+---
+
+### En el consumidor
+
+Flow típico:
+```text
+┌──────────────┐
+│   Evento     │
+│   recibido   │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│   Procesa    │
+│   evento     │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│  Persiste    │
+│  cambios     │
+└──────┬───────┘
+       │
+       ▼
+┌────────────────┐
+│ Guarda evento  │
+│ como procesado │
+└──────┬─────────┘
+       │
+       ▼
+┌───────────────────┐
+│  Envía ACK        |
+│ (mueve el offset) |
+└───────────────────┘
+```
+---
+
+### En el productor 
+Se aplica el **Outbox Pattern**
+
+## Outbox Pattern
+
+<Callout type="info">
+Evita perder eventos cuando la DB y el broker no están sincronizados.
+</Callout>
+
+Flujo
+
+```text
+┌──────────────────────────────┐
+│        DB TRANSACTION        │
+│                              │
+│  Guarda entidad de dominio   │
+│  (ej: Cliente)               │
+│                              │
+│  Guarda evento en OUTBOX     │
+│  estado: PENDING             │
+│                              │
+└───────────────┬──────────────┘
+                │
+                ▼
+        COMMIT TRANSACTION
+                │
+                ▼
+┌──────────────────────────────┐
+│           Worker             │
+│                              │
+│  Lee eventos de outbox con   │
+│       estado PENDING         │
+│                              │
+│  Publica evento al broker    │
+│                              │
+│  Marca evento como SENT      │
+└──────────────────────────────┘
+```
+<Callout>
+En el Outbox Pattern, si el broker cae, los eventos quedan en la tabla outbox con estado PENDING_TO_SEND y se reintentarán cuando el broker vuelva; si el publisher cae justo después de hacer la transacción, los eventos ya están en la outbox, por lo que ningún evento se pierde y el worker podrá enviarlos cuando el publisher se reinicie.
+</Callout>
+

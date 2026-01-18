@@ -1,0 +1,61 @@
+# Interview Preparation
+
+Preparing for an interview involves both knowing what to ask and being ready for what might be asked. This section covers common questions and tips for technical assessments.
+
+## Questions to ask the company
+
+It's important to understand the company's culture, vision, and how you fit in.
+
+- Planes a corto, medio y largo plazo.
+- ¿Cómo es un día cualquiera en la empresa?
+- ¿Qué frentes hay abiertos actualmente y dónde creéis que esta posición puede aportar más valor?
+- ¿Qué análisis habéis sacado de mi perfil y cómo creéis que os puedo ayudar?
+- ¿Qué cambiarías de la empresa? (metodología, flexibilidad, horarios, etc.)
+- ¿Qué es lo que más te gusta y lo que menos te gusta de trabajar aquí?
+- ¿Cómo trabajáis y os organizáis en vuestro día a día?
+- ¿Cómo es el onboarding?
+- ¿Con qué creéis que cojeáis más y qué perfil buscáis para compensarlo?
+- Destaca uno o varios retos/logros que habéis conseguido y estáis orgullosos.
+
+---
+
+## Questions for me
+
+Be prepared to discuss your background and your future expectations.
+
+- Cuéntame de tu pasado laboral.
+- ¿Qué buscas ahora?
+- ¿Cómo crees que nos puedes ayudar?
+- Retos o logros a destacar en proyectos/puestos anteriores.
+- ¿Qué priorizas: cantidad o calidad?
+
+---
+
+## Technical Interviews
+
+import { Callout } from 'nextra/components'
+
+<Callout type="info">
+Technical interviews are not just about finding the right answer, but about demonstrating your thought process and understanding of the technology.
+</Callout>
+
+### Key Focus Areas
+
+- **Deep Dives**: They look for detailed knowledge of the technology stack.
+- **Beyond the Happy Path**: Focus on edge cases. How do you handle failures?
+- **Keywords to mention**: 
+    - Circuit Breakers
+    - Timeouts & Retries
+    - Monitoring & Alerting
+    - Logs & Observability
+- **Data Processing & Scale**: 
+    - Usage of **chunks**, **buffers**, or **streams** for processing large volumes of data efficiently.
+    - **Parallelization**: When and how to parallelize tasks safely.
+    - **Coupling**: Be aware of synchronous coupling (API calls) between microservices and how it affects resilience.
+- **Scenario-based questions**: For example, data loading processes from a client to their systems. 
+    - Consider: Retries, Timeouts, Errors.
+    - Proposal: Provide a solution and explain its **trade-offs**.
+
+<Callout type="warning">
+When things fail, don't just explain the solution; explain how you detected the failure and how you ensure it doesn't happen again (or how it's handled automatically).
+</Callout>
