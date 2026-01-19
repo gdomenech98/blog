@@ -1,7 +1,7 @@
 {
     "principles": "Software Design Principles",
     "ddd": "Domain Driven Design",
-    "bdd": "Behaviour Driven Design",
+    "edd": "Event Driven Design",
     "tdd": "Test Driven Design",
-    "edd": "Event Driven Design"
+    "bdd": "Behaviour Driven Design"
 }
