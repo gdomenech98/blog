@@ -157,6 +157,28 @@ Achieved through: **persistent brokers**, **logs**, and **database persistence**
 Events do not expose sensitive data or internal schemas; they follow clear contracts (schema, version).
 </Callout>
 
+<Callout type="info">
+**Event Authentication** through producers and consumers.
+👉 The authentication does not occur in Kafka or the event.
+👉 It occurs when a microservice exposes or consumes a synchronous API.
+
+**Events are not authenticated**; they are authorized/secured by infrastructure:
+
+- Infrastructure security:
+  - TLS
+  - SASL
+  - ACLs de Kafka: ACL (Access Control List) defines what identity can perform an action on what resource.
+    * Example: an ACL per topic is a rule like: “Service X can PRODUCE in topic Y, but not CONSUME.”
+
+- Authorization by:
+  - Topic
+  - Consumer group
+  - Service
+
+Kafka ensures:
+- Who can **publish**
+- Who can **consume**
+</Callout>
 ---
 
 ### 7. Observability
@@ -166,6 +188,26 @@ It should be possible to:
 - **Debug failures**
 - **Correlate events**
 </Callout>
+
+<Callout type="error">
+- **Events** → what happened (business event)
+- **Traces/logs** → how it happened (flow and processing time)
+</Callout>
+
+Example of traces for a `CustomerCreated` event published by a microservice:
+```
+{
+  "event": "CustomerCreated",
+  "customerId": "123",
+  "traceId": "trace-1001",  // the entire creation operation
+  "spanId": "span-02",      // this specific step: publishing the event
+  "createdAt": "2026-01-22T12:00:00Z"
+}
+```
+- `traceId` connects the event through all microservices.
+- `spanId` shows exactly which step produced this event.
+
+If you only include `traceId` without `spanId`, you can still track the flow, but you won’t be able to measure latency or pinpoint which step generated each event.
 
 ---
 
@@ -256,11 +298,22 @@ Typical flow:
 
 ```mermaid
 flowchart LR
-    A[Event received] --> B[Process event]
-    B --> C[Persist changes]
-    C --> D[Store event as processed]
-    D --> E["Send ACK\n(move offset)"]
+    A[Event received] --> B[Process event and apply bussines logic]
 
+    subgraph TX[Transaction]
+        C1[Persist domain state] --> C2[Insert event in outbox]
+    end
+
+    B --> TX
+    TX --> C[End Transaction]
+
+    Z[Outbox Worker Trigger] --> Y[Check for outbox events pending to send]
+    Y --> WRKR
+    subgraph WRKR[Transaction]
+        D1["Publish event"] --> D2["Move offset"]
+        D2 --> D3["Update outbox event status"]
+    end
+    WRKR --> X["End Transaction"]
 ```
 
 ---
