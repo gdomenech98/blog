@@ -158,7 +158,22 @@ Individual records may fail during this process.
 ---
 
 ## Error Handling and Dead Letter Queues (DLQ)
-
+```
+        +-------------------+
+        | Domain Service    |
+        | (validation/map)  |
+        +-------------------+
+                  |
+            valid | invalid
+                  |
+      +-----------+-----------+
+      |                       |
+      v                       v
++------------------+ +------------------+
+| Persist State    | | DLQ              |
+| (success path)   | | (audit/replay)   |
++------------------+ +------------------+
+```
 ### The problem
 
 A single invalid record must not block the entire pipeline.
@@ -263,8 +278,9 @@ Examples:
 **Drawback**
 
 * Not always applicable
+* Events can't be lost, use [Outbox Pattern
+](./edd#outbox-pattern).
 
-Events can't be lost, use Outbox Pattern.
 ---
 
 ### Strategy 4: Combining Approaches
