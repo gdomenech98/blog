@@ -1,0 +1,22 @@
+# Saga in Microservices
+
+import { Callout } from 'nextra/components'
+
+**Saga** is a design pattern in microservices used to manage **distributed transactions** without relying on ACID transactions.
+
+<Callout type="info">
+It breaks a large operation into **local steps**.  
+If a step fails, **compensating actions** are executed to undo the previous steps.
+</Callout>
+
+## Types of Saga
+
+### 1. Choreographed (Most used)
+Each service **reacts to events** independently, without a central coordinator.
+
+### 2. Orchestrated
+A **central service** coordinates the saga steps, instructing each service what action to perform.
+
+<Callout type="warning">
+Orchestration is less used because it requires a central coordinator that can cause bottle necks.
+</Callout>

@@ -1,4 +1,6 @@
 {
     "index": "Event Driven Design",
-    "errors-distributed-systems": "Errors in Distributed Systems"
+    "errors": "Errors in Distributed Systems",
+    "idempotency": "Idempotency in Distributed Systems",
+    "saga": "SAGA Pattern"
 }

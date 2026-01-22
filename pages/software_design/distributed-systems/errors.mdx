@@ -111,6 +111,8 @@ After multiple failures:
 
 ## 8. Idempotency Keys and Correlation IDs
 
+Learn more at [Idempotency in Distributed Systems](/software_design/distributed-systems/idempotency).
+
 ### Idempotency Keys
 Ensure an operation is executed **only once**, even if retries occur.
 
@@ -126,6 +128,17 @@ Allow tracing a full operation across services, logs, and events.
 They typically correspond to a `traceId`.
 
 Using tools like **OpenTelemetry, Jaeger, or Zipkin**, a traceId makes it possible to follow a complete business operation end-to-end.
+
+Each traced event should include:
+```json
+{
+    event_id: "UUID"
+    correlation_id: "traceID"
+    causation_id "Parent event_id that triggers this event"
+}
+```
+
+Allowing: Rebuilding the causal chain and end-to-end auditability.
 
 ---
 
@@ -180,3 +193,54 @@ The worker calls the external API without blocking the client and can apply more
 
 **Worker → DLQ**
 If the operation keeps failing after multiple attempts, the message is sent to the Dead Letter Queue for analysis or reprocessing.
+
+---
+
+
+# 11. Audit Logs in Distributed Systems
+
+To audit a distributed system, you need to log events in a way that allows you to rebuild the causal chain and end-to-end auditability.
+The logs must be immutable (append-only system) and stored agnostic from the application (domain).
+
+Examples of `append-only` systems:
+- DB WORM / S3 con Object Lock
+- Dedicated Event Store
+- Data Lake with retention policies
+
+Example of events saved:
+```json
+{
+    "event_id": "UUID",
+    "event_type": "string",
+    "aggregate_id": "debtor_id", // id of the domain entity which event is related to
+    "payload_hash": "string", // Allow data integrity without exposing data 
+    "producer": "DebtorService",
+    "timestamp": "string",
+    "trace_id": "string"
+}
+```
+<Callout type="error">
+    It can't be deleted or modified.
+</Callout>
+
+Final flow:
+``` mermaid
+flowchart TD
+    A[Microservice receives event] --> B[Perform domain changes]
+    B --> C[Transaction]
+    C --> D[Save state]
+    C --> E[Write audit log]
+    C --> F[Write outbox]
+    
+    E --> G[Event is published]
+    
+    F --> H[Audit log never changes]
+
+    style D fill:#f9f,stroke:#333,stroke-width:2px
+    style C fill:#bbf,stroke:#333,stroke-width:2px
+    style E fill:#bfb,stroke:#333,stroke-width:2px
+    style F fill:#ffb,stroke:#333,stroke-width:2px
+    style G fill:#fdd,stroke:#333,stroke-width:2px
+    style H fill:#eeb,stroke:#333,stroke-width:2px
+
+```

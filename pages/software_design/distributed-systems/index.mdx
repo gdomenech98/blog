@@ -126,6 +126,8 @@ This is critical because:
 Processing N times must produce the same result as processing once.
 </Callout>
 
+Learn more at [Idempotency in Distributed Systems](/software_design/distributed-systems/idempotency).
+
 ---
 
 ### 4. Event ordering
@@ -252,36 +254,15 @@ A queue that allows: **reprocessing failed events** and **analyzing errors**.
 
 Typical flow:
 
-```text
-┌──────────────┐
-│   Event      │
-│   received   │
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐
-│   Process    │
-│   event      │
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐
-│  Persist     │
-│  changes     │
-└──────┬───────┘
-       │
-       ▼
-┌────────────────┐
-│ Store event    │
-│ as processed   │
-└──────┬─────────┘
-       │
-       ▼
-┌───────────────────┐
-│  Send ACK         │
-│ (move offset)     │
-└───────────────────┘
+```mermaid
+flowchart LR
+    A[Event received] --> B[Process event]
+    B --> C[Persist changes]
+    C --> D[Store event as processed]
+    D --> E["Send ACK\n(move offset)"]
+
 ```
+
 ---
 ### On the producer
 The **Outbox Pattern** applies
@@ -293,29 +274,11 @@ Prevents losing events when the DB and broker are not synchronized.
 </Callout>
 
 
-```
-        Incoming Event
-              |
-              v
-+---------------------------+
-|  Consumer / Domain Svc    |
-|                           |
-|  1. Update domain state   |
-|  2. Write outbox event    |
-+-------------+-------------+
-              |
-        DB Transaction
-              |
-              v
-+---------------------------+
-|        Outbox Table       |
-|      (PENDING | SENT)     |
-+-------------+-------------+
-              |
-        background worker
-              |
-              v
-        Message Broker
+``` mermaid
+flowchart TD
+    A[Incoming Event] --> B["Consumer / Domain Service\n1. Update domain state\n2. Write outbox event"]
+    B -->|DB Transaction| C["Outbox Table\n(PENDING / SENT)"]
+    C -->|Background worker (publishes) | D[Message Broker]
 ```
 
 The **Outbox Pattern** is applied by the **consumer service** that receives an event, **persists a domain change**, and as a consequence **must publish a new event**.
