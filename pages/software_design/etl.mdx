@@ -1,0 +1,298 @@
+# Designing a Resilient and Scalable Data Ingestion System
+
+## Introduction
+
+In real-world environments, data ingestion systems rarely deal with perfect or controlled inputs. Data can arrive in multiple formats, from different sources, with errors, duplicates, and unpredictable volumes. This document describes a robust architecture for building a data ingestion system designed for these conditions, prioritizing **resilience**, **scalability**, and **consistency**.
+
+The approach is intended for modern event-driven and microservice-based architectures, but the principles apply to other styles as well.
+
+---
+
+## System Goals
+
+The primary goals of the system are:
+
+* Ingest data from any source
+* Process data asynchronously and non-blocking
+* Tolerate partial failures without data loss
+* Guarantee consistency through idempotency
+* Provide full system observability
+
+---
+
+## Data Sources
+
+The system must be **source-agnostic**. Common examples include:
+
+* HTTP requests with direct payloads
+* CSV files uploaded via HTTP or FTP
+* Files published to object storage (S3, GCS, Azure Blob)
+
+Regardless of the origin, all data flows through the same logical pipeline.
+
+---
+
+## Core Design Principles
+
+### Asynchronous processing
+
+Ingestion must never block the client or upstream system. The system accepts the input, persists or references it, and continues processing in the background.
+
+### Event-driven architecture
+
+Components communicate via events. This decouples responsibilities and allows each part of the system to scale independently.
+
+### Failure-first mindset
+
+The design assumes:
+
+* Data can be malformed
+* Services can crash
+* Message brokers can be temporarily unavailable
+
+The system must continue operating under these conditions.
+
+---
+
+## High-level Flow
+
+```
++-------------+        +------------------+        +------------------+
+|   Sources   | -----> |  Ingest Service  | -----> | Message Broker   |
+| (HTTP/CSV)  |        | (stream + clean) |        | (Kafka / etc.)   |
++-------------+        +------------------+        +------------------+
+                                                             |
+                                                             v
+                                                   +------------------+
+                                                   | Domain Services  |
+                                                   | (Invoices, ...)  |
+                                                   +------------------+
+```
+
+1. The **Ingest Service** receives or detects new data
+2. Input is processed using **streams**
+3. A **sanitize and normalization** phase is applied
+4. Valid data is sent in batched events
+5. Domain services process and persist data
+6. Errors are isolated and handled explicitly
+
+---
+
+## Stream-based Processing
+
+```
++-----------+    chunk    +-----------+    chunk    +-----------+
+|   File    | ---------> |  Parser   | ---------> | Processor |
+| (CSV)    |             | (stream)  |             | (logic)   |
++-----------+             +-----------+             +-----------+
+```
+
+One of the most critical aspects is never assuming input size.
+
+### The problem
+
+Loading entire files into memory can cause:
+
+* Out-of-memory errors
+* Process blocking
+* Service crashes
+
+### The solution
+
+* Incremental reading (chunk by chunk)
+* Line-by-line processing
+* Backpressure control
+
+This approach enables stable processing of anything from hundreds to millions of records.
+
+---
+
+## Sanitize Phase
+
+### Purpose
+
+Transform untrusted, raw data into well-known and manageable structures.
+
+### Responsibilities
+
+* Format conversion (CSV → JSON)
+* Type normalization
+* Basic data cleanup
+
+Examples:
+
+* "123" → number
+* "TRUE" / "FALSE" → boolean
+* Normalize date formats
+
+This phase **does not apply business rules**. It only prepares data for downstream processing.
+
+---
+
+## Chunked Delivery to Domain Services
+
+After sanitization, data is grouped into controlled batches and sent as events.
+
+Benefits:
+
+* Reduces pressure on the message broker
+* Improves throughput
+* Simplifies retries and failure handling
+
+Each event represents a coherent batch of sanitized data.
+
+---
+
+## Domain Service Processing
+
+Example: an Invoice microservice.
+
+### Responsibilities
+
+* Map incoming data to the domain model
+* Validate schemas and business rules
+* Persist data in its own database
+
+Individual records may fail during this process.
+
+---
+
+## Error Handling and Dead Letter Queues (DLQ)
+
+### The problem
+
+A single invalid record must not block the entire pipeline.
+
+### The solution
+
+* Failed records are sent to a **Dead Letter Queue (DLQ)**
+* They are stored together with failure reasons
+* They can be audited or reprocessed later
+
+This provides both resilience and traceability.
+
+---
+
+## Idempotency
+
+```
+        Event (retry)
+             |
+             v
++-----------------------+
+|   Consumer Service    |
+|  (idempotent logic)   |
++-----------------------+
+       |        |
+   ignored   applied
+```
+
+In distributed, event-driven systems, **idempotency** is a fundamental requirement. Due to retries, network issues, or manual reprocessing, the same event may reach a consumer multiple times.
+
+The goal of idempotency is simple: **processing the same event multiple times must produce the same result as processing it once**.
+
+### What idempotency provides
+
+* Safe retries
+* Easier failure recovery
+* Protection against duplicated data
+* Confidence in asynchronous architectures
+
+---
+
+### Strategy 1: Event ID Deduplication
+
+Each event carries a unique `event_id`.
+
+**How it works**
+
+* The consumer stores processed `event_id`s
+* Before processing, it checks for existence
+* Already-processed events are ignored
+
+**What it provides**
+
+* Strong deduplication guarantees
+* Easy auditing and reasoning
+
+**Trade-offs**
+
+* Requires additional storage
+* Needs long-term cleanup or TTLs
+
+---
+
+### Strategy 2: Timestamp-based State Control
+
+This strategy assumes the most recent state is authoritative.
+
+**How it works**
+
+* Events include a `created_at` timestamp
+* Persisted entities store `last_updated`
+* If `created_at` ≤ `last_updated`, the event is ignored
+* Otherwise, it is processed and updates the state
+
+**What it provides**
+
+* No need to store processed events
+* Works well for state-based models
+
+**Limitations**
+
+* Relies on reasonably synchronized clocks
+* Best-effort consistency
+
+---
+
+### Strategy 3: Idempotent Operations
+
+Instead of deduplicating events, operations themselves are designed to be idempotent.
+
+Examples:
+
+* Using `UPSERT` instead of `INSERT`
+* Deterministic updates
+* Full state replacement
+
+**What it provides**
+
+* Lower technical complexity
+* Very robust against retries
+
+**Drawback**
+
+* Not always applicable
+
+Events can't be lost, use Outbox Pattern.
+---
+
+### Strategy 4: Combining Approaches
+
+In critical systems, strategies are often combined:
+
+* `event_id` for strong deduplication
+* Timestamps for state control
+* Idempotent database operations
+
+This balances safety, performance, and simplicity.
+
+---
+
+## Observability
+
+A system without observability is impossible to operate reliably.
+
+### Key elements
+
+* Structured logs with context
+* Throughput and error metrics
+* Automated alerts
+
+These allow fast detection and response to issues.
+
+---
+
+## Conclusion
+
+This design embraces the reality of production systems: imperfect data, constant failures, and the need to scale. Applying these principles results in a data ingestion system that is robust, maintainable, and ready for future growth.

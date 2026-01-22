@@ -3,5 +3,6 @@
     "ddd": "Domain Driven Design",
     "edd": "Event Driven Design",
     "tdd": "Test Driven Design",
-    "bdd": "Behaviour Driven Design"
+    "bdd": "Behaviour Driven Design",
+    "etl": "Extract Transform Load (ETL) Flow"
 }

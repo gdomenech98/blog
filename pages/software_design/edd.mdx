@@ -281,7 +281,7 @@ Typical flow:
 │  Send ACK         │
 │ (move offset)     │
 └───────────────────┘
-
+```
 ---
 ### On the producer
 The **Outbox Pattern** applies
@@ -292,33 +292,107 @@ The **Outbox Pattern** applies
 Prevents losing events when the DB and broker are not synchronized.
 </Callout>
 
-Flow
 
-```text
-┌──────────────────────────────┐
-│        DB TRANSACTION        │
-│                              │
-│  Store domain entity         │
-│  (e.g., Customer)            │
-│                              │
-│  Store event in OUTBOX       │
-│  status: PENDING             │
-│                              │
-└───────────────┬──────────────┘
-                │
-                ▼
-        COMMIT TRANSACTION
-                │
-                ▼
-┌──────────────────────────────┐
-│           Worker             │
-│                              │
-│  Reads events from outbox    │
-│       with PENDING status    │
-│                              │
-│  Publishes event to broker   │
-│                              │
-│  Marks event as SENT         │
-└──────────────────────────────┘
 ```
+        Incoming Event
+              |
+              v
++---------------------------+
+|  Consumer / Domain Svc    |
+|                           |
+|  1. Update domain state   |
+|  2. Write outbox event    |
++-------------+-------------+
+              |
+        DB Transaction
+              |
+              v
++---------------------------+
+|        Outbox Table       |
+|      (PENDING | SENT)     |
++-------------+-------------+
+              |
+        background worker
+              |
+              v
+        Message Broker
+```
+
+The **Outbox Pattern** is applied by the **consumer service** that receives an event, **persists a domain change**, and as a consequence **must publish a new event**.
+
+In other words, the actor implementing the Outbox Pattern is the **consumer that becomes a producer**.
+
+---
+
+### The problem it solves
+
+A common event-driven flow is:
+
+1. A microservice consumes an event
+2. It persists a domain state change
+3. It publishes a new event to the broker
+
+If the service crashes between steps 2 and 3:
+
+* The domain state is already persisted
+* The outgoing event is never published
+* The system becomes inconsistent
+
+---
+
+### Role of the Outbox-enabled service
+
+The service:
+
+* **Consumes** upstream events
+* **Persists** domain state changes
+* **Produces** downstream events
+
+The Outbox Pattern ensures these responsibilities are handled safely.
+
+---
+
+### How it works
+
+1. The service receives an event
+2. A database transaction is started
+3. The domain change is persisted
+4. The outgoing event is written to an **outbox table**
+5. The transaction is committed
+
+A separate background worker:
+
+* Polls the outbox table
+* Publishes pending events to the broker
+* Marks events as `SENT`
+
+---
+
+### Typical outbox states
+
+* `PENDING`: waiting to be published
+* `SENT`: successfully published
+* (optional) `FAILED`: failed after retries
+
+---
+
+### What this pattern provides
+
+* Guarantees that **if the domain state exists, the event will eventually exist**
+* Enables safe retries
+* Prevents event loss
+* Decouples domain logic from broker availability
+
+---
+
+### Relationship with idempotency
+
+Because delivery is usually *at-least-once*:
+
+* Downstream consumers **must be idempotent**
+* The Outbox Pattern guarantees delivery, not uniqueness
+
+Both patterns complement each other.
+
+
 <Callout> In the Outbox Pattern, if the broker goes down, events remain in the outbox table with status `PENDING` and will be retried when the broker comes back; if the publisher crashes right after committing the transaction, the events are already in the outbox, so no events are lost and the worker can send them when the publisher restarts. </Callout>
