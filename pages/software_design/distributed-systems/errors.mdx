@@ -156,7 +156,7 @@ Allowing: Rebuilding the causal chain and end-to-end auditability.
 flowchart LR
     A[Request] --> B[Timeout]
     B --> C[Retries]
-    C --> D[Circuit Breaker]
+    C --> D["Circuit Breaker"]
     D --> E[Fallback]
     E --> F[DLQ]
 ```
