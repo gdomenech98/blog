@@ -87,7 +87,10 @@ Each service processes events at its own pace. Over time, all converge to the sa
 </Callout>
 
 Example:  
-Order created --> Billing processes it --> Notifications process it
+```mermaid
+flowchart LR
+    A[Order created] --> B[Billing processes it] --> C[Notifications process it]
+```
 
 States may differ temporarily, but the system eventually becomes consistent.
 
@@ -306,12 +309,12 @@ flowchart LR
 
     B --> TX
     TX --> C[End Transaction]
+    C --> D["ACK processed event (change offset)"]
 
     Z[Outbox Worker Trigger] --> Y[Check for outbox events pending to send]
     Y --> WRKR
     subgraph WRKR[Transaction]
-        D1["Publish event"] --> D2["Move offset"]
-        D2 --> D3["Update outbox event status"]
+        D1["Publish event"] --> D2["Update outbox event status"]
     end
     WRKR --> X["End Transaction"]
 ```
