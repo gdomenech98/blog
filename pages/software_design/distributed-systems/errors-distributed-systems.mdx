@@ -1,0 +1,182 @@
+# Error Handling in Microservices with Asynchronous Integrations
+
+How to design resilient microservices when integrating with external APIs like OpenAI
+
+---
+
+import { Callout } from 'nextra/components'
+
+## Introduction
+
+When a microservice integrates asynchronously with an external service (for example, the OpenAI API), failure is **not a possibility — it is a normal system state**.
+
+This post describes a **practical and scalable** approach to building resilience from day one.
+
+---
+
+## 1. Assume failure as a normal state
+
+An external service can:
+- Stop responding
+- Respond slowly
+- Fail intermittently
+- Go completely down
+
+Designing systems without assuming this reality leads to cascading failures.
+
+<Callout type="warning">
+In distributed systems, external availability is never under your control.
+</Callout>
+
+---
+
+## 2. Observability as the foundation
+
+Before you can recover from a failure, you need to **detect and understand it**.
+
+Always include:
+- Structured logs (`requestId`, `service`, `errorType`)
+- Metrics (latency, error rate, p95/p99)
+- Alerts based on trends, not single events
+
+---
+
+## 3. Timeouts and SLA
+
+A **timeout** defines how long you are willing to wait for an external response.
+
+<Callout type="info">
+**SLA (Service Level Agreement)** defines expected availability, latency, and reliability.  
+Your timeout should be based on the SLA *you* can accept — not the provider’s SLA.
+</Callout>
+
+Best practices: explicit timeouts, never rely on defaults, keep them short and realistic (2–5s).
+
+---
+
+## 4. Retries with exponential backoff
+
+Retries should only be applied to **transient failures** (timeouts, 5xx errors).
+
+Recommended strategy:
+- Maximum number of attempts
+- Exponential backoff + jitter
+- Never infinite retries
+
+---
+
+## 5. Circuit Breaker
+
+A circuit breaker prevents continuously calling a service that is already failing.
+
+### Trigger
+It opens when defined thresholds are exceeded, such as:
+- Consecutive failures
+- Error rate within a time window
+- Repeated timeouts
+
+<Callout type="info">
+For a circuit breaker to work correctly, it must persist and evaluate success/failure data from calls to the external service.
+</Callout>
+
+### States
+- `Closed`: normal operation
+- `Open`: calls are blocked
+- `Half-open`: controlled test requests to check recovery
+
+---
+
+## 6. Fallbacks and graceful degradation
+
+When the circuit is open:
+- Return cached responses
+- Redirect to an alternative service
+- Offer limited functionality
+- Return an informative message
+
+---
+
+## 7. Asynchronous processing and DLQ
+
+For non–time-critical operations:
+- Use queues
+- Process with workers
+- Apply retries in a decoupled way
+
+After multiple failures:
+- Send the message to a **Dead Letter Queue (DLQ)**
+- Manual or automated reprocessing
+
+---
+
+## 8. Idempotency Keys and Correlation IDs
+
+### Idempotency Keys
+Ensure an operation is executed **only once**, even if retries occur.
+
+Examples of idempotency keys:  
+`eventId`, `requestId`, `operationId`
+
+<Callout type="warning">
+Duplicate detection is done by checking whether the idempotency key has already been processed.
+</Callout>
+
+### Correlation IDs
+Allow tracing a full operation across services, logs, and events.  
+They typically correspond to a `traceId`.
+
+Using tools like **OpenTelemetry, Jaeger, or Zipkin**, a traceId makes it possible to follow a complete business operation end-to-end.
+
+---
+
+## 9. Failure handling priority order
+
+<Callout type="warning">
+1. Timeout  
+2. Retries  
+3. Circuit Breaker  
+4. Fallback / Degradation  
+5. DLQ  
+</Callout>
+
+``` mermaid
+flowchart LR
+    A[Request] --> B[Timeout]
+    B --> C[Retries]
+    C --> D[Circuit Breaker]
+    D --> E[Fallback]
+    E --> F[DLQ]
+```
+
+---
+
+## 10. Architecture diagram
+
+``` mermaid
+flowchart LR
+    Client --> Service
+    Service --> ExternalAPI
+    Service --> Queue
+    Queue --> Worker
+    Worker --> ExternalAPI
+    Worker --> DLQ
+```
+
+**Client → Service**
+The client (frontend or another service) sends a request to the microservice.
+
+**Service → ExternalAPI**
+Synchronous path.
+The service attempts to call the external API using timeouts, retries, and a circuit breaker.
+
+**Service → Queue**
+If the operation is not time-critical or the external service is degraded, the service publishes an event to a queue.
+
+**Queue → Worker**
+An independent worker consumes messages asynchronously, fully decoupled from the user request flow.
+
+**Worker → ExternalAPI**
+The worker calls the external API without blocking the client and can apply more aggressive retry policies.
+
+**Worker → DLQ**
+If the operation keeps failing after multiple attempts, the message is sent to the Dead Letter Queue for analysis or reprocessing.

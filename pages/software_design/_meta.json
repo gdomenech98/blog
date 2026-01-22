@@ -1,7 +1,7 @@
 {
     "principles": "Software Design Principles",
     "ddd": "Domain Driven Design",
-    "edd": "Event Driven Design",
+    "distributed-systems": "Distributed Systems",
     "tdd": "Test Driven Design",
     "bdd": "Behaviour Driven Design",
     "etl": "Extract Transform Load (ETL) Flow"
